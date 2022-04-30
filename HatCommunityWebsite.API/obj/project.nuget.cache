@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "igSs8hUR8C3BwklOx83ecBlocCDN0zsv1OmH3pwASEj7XuGszP3gqk9oPSn8s1ufyVKrot1GsH0RO8Ag49Ss9A==",
+  "dgSpecHash": "JYWkiI3Sb/+qY9BC7cwupRRey2j4IWGNlCioNm2+yBNOpG3QRWdE0x8ZzSquwnurjFB+oeJVvXUF7ClWXfXVkw==",
   "success": true,
-  "projectFilePath": "D:\\Enhu\\Documents\\GitHub\\HatCommunityWebsite\\HatCommunityWebsite.API\\HatCommunityWebsite.API\\HatCommunityWebsite.API.csproj",
+  "projectFilePath": "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\HatCommunityWebsite.API\\HatCommunityWebsite.API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Enhu\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\Enhu\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\6.0.4\\microsoft.aspnetcore.authentication.jwtbearer.6.0.4.nupkg.sha512",

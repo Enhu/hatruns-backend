@@ -1938,11 +1938,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Enhu\\Documents\\GitHub\\HatCommunityWebsite\\HatCommunityWebsite.API\\HatCommunityWebsite.Core\\HatCommunityWebsite.Core.csproj",
+      "projectUniqueName": "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\HatCommunityWebsite.Core\\HatCommunityWebsite.Core.csproj",
       "projectName": "HatCommunityWebsite.Core",
-      "projectPath": "D:\\Enhu\\Documents\\GitHub\\HatCommunityWebsite\\HatCommunityWebsite.API\\HatCommunityWebsite.Core\\HatCommunityWebsite.Core.csproj",
+      "projectPath": "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\HatCommunityWebsite.Core\\HatCommunityWebsite.Core.csproj",
       "packagesPath": "C:\\Users\\Enhu\\.nuget\\packages\\",
-      "outputPath": "D:\\Enhu\\Documents\\GitHub\\HatCommunityWebsite\\HatCommunityWebsite.API\\HatCommunityWebsite.Core\\obj\\",
+      "outputPath": "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\HatCommunityWebsite.Core\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Enhu\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -1959,8 +1959,8 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "D:\\Enhu\\Documents\\GitHub\\HatCommunityWebsite\\HatCommunityWebsite.API\\FullRuns.DB\\HatCommunityWebsite.DB.csproj": {
-              "projectPath": "D:\\Enhu\\Documents\\GitHub\\HatCommunityWebsite\\HatCommunityWebsite.API\\FullRuns.DB\\HatCommunityWebsite.DB.csproj"
+            "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\FullRuns.DB\\HatCommunityWebsite.DB.csproj": {
+              "projectPath": "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\FullRuns.DB\\HatCommunityWebsite.DB.csproj"
             }
           }
         }

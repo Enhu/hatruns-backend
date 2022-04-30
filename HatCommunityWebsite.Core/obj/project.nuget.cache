@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "eAs0wWDnHhuNhNbUpqthHl/1ft0a01zpp3jfd+wSBKTlZ/iuAejqpDMQ4ytHjLzuJp5E1ijup4xn6v4NQxuh/w==",
+  "dgSpecHash": "cwUmQokNVa9obFZXo6E910JcJuMcFHGNmM0MUCec9G4NmS4nuo6n+s7ubQ1JtcrOyyNcffl9e3wEJUVnQ5F0Eg==",
   "success": true,
-  "projectFilePath": "D:\\Enhu\\Documents\\GitHub\\HatCommunityWebsite\\HatCommunityWebsite.API\\HatCommunityWebsite.Core\\HatCommunityWebsite.Core.csproj",
+  "projectFilePath": "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\HatCommunityWebsite.Core\\HatCommunityWebsite.Core.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Enhu\\.nuget\\packages\\microsoft.aspnetcore.jsonpatch\\6.0.4\\microsoft.aspnetcore.jsonpatch.6.0.4.nupkg.sha512",
     "C:\\Users\\Enhu\\.nuget\\packages\\microsoft.aspnetcore.mvc.newtonsoftjson\\6.0.4\\microsoft.aspnetcore.mvc.newtonsoftjson.6.0.4.nupkg.sha512",

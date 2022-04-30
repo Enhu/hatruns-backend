@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "V86ZaFu+hMoO0KLYnnWBoCIsHrGhxD7bcTHdld1YolJw5BC8migSETdV3PkAFSKAdvS8g7h7pm0V8u3pbBJ9NQ==",
+  "dgSpecHash": "kdkCG1TxPvQku9Ue6bnSKUIwLffuQZP6W3I1+OaeTVywGBegl6CKvF+/DQuBVKlSIyhLBfZqeZGhox3EjslIwA==",
   "success": true,
-  "projectFilePath": "D:\\Enhu\\Documents\\GitHub\\HatCommunityWebsite\\HatCommunityWebsite.API\\FullRuns.DB\\HatCommunityWebsite.DB.csproj",
+  "projectFilePath": "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\FullRuns.DB\\HatCommunityWebsite.DB.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Enhu\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\Enhu\\.nuget\\packages\\microsoft.aspnetcore.jsonpatch\\6.0.4\\microsoft.aspnetcore.jsonpatch.6.0.4.nupkg.sha512",
