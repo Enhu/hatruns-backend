@@ -104,7 +104,7 @@ namespace HatCommunityWebsite.API.Controllers
             return Ok("Run verified");
         }
 
-        [HttpPut("reject/{runId}"), Authorize]
+        [HttpPut("reject"), Authorize]
         public async Task<ActionResult<string>> RejectRun(RejectDto request)
         {
             var run = await _context.Runs.FindAsync(request.RunId);
