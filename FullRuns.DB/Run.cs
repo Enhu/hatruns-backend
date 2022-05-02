@@ -15,12 +15,18 @@ namespace FullRuns.DB
         public string VideoLinks { get; set; }
         public DateTime Date { get; set; }
         public string SubmittedBy { get; set; }
+        public DateTime SubmittedDate { get; set; }
+
+        //
+        public int Status { get; set; }
         public string? VerifiedBy { get; set; }
         public DateTime? VerifiedDate { get; set; }
+        public DateTime? RejectedDate { get; set; }
+        public string? RejectedBy { get; set; }
+        public string? RejectedReason { get; set; }
         public bool IsObsolete { get; set; }
 
         //Navigation Properties
-        public int SubmissionId { get; set; }
         public List<RunVariable> RunVariables { get; set; }
         [JsonIgnore]
         public int GameId { get; set; }

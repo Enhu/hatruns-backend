@@ -31,7 +31,7 @@ namespace HatCommunityWebsite.API.Controllers
         }     
 
         [HttpPost("submit"), Authorize]
-        public async Task<ActionResult<Submission>> QueueRun(RunDto request)
+        public async Task<ActionResult<Run>> SubmitRun(RunDto request)
         {
             var game = await _context.Games.FindAsync(request.GameId);
             if (game == null)
@@ -49,145 +49,82 @@ namespace HatCommunityWebsite.API.Controllers
             if (subCategory == null && request.SubcategoryId != 0)
                 return NotFound();
 
-            var newSubmission = new Submission
+            var newRun = new Run
             {
                 PlayerName = request.PlayerName,
-                GameId = request.GameId,
-                CategoryId = request.CategoryId,
+                Game = game,
+                SubCategory = subCategory,
+                Category = category,
                 Description = request.Description,
                 Platform = request.Platform,
-                CategoryName = category.Name,
-                GameName = game.Name,
-                SubcategoryName = subCategory?.Name,
                 UserId = user?.Id,
                 Time = request.Time,
                 VideoLinks = request.VideoLinks,
                 Date = request.Date,
                 SubmittedDate = DateTime.UtcNow,
                 SubmittedBy = request.SubmittedBy,
-                Status = (int)Status.Pending,
                 SubcategoryId = request.SubcategoryId,
-                Variables = request.Variables,
+                Status = (int)Status.Pending,
             };
 
-            _context.Submissions.Add(newSubmission);
+            await GetRunVariables(request, newRun);
+
+            if (request.AutoVerify)
+            {
+                var hasSubcategory = newRun.SubCategory != null;
+                await UpdateCurrentVerifiedRun(false, hasSubcategory, newRun);
+                newRun.Status = (int)Status.Verified;
+            }
+                
+            _context.Runs.Add(newRun);
             await _context.SaveChangesAsync();
 
-            return Ok("Submission created.");
+            return Ok("Run created.");
         }
 
-        [HttpPost("verify"), Authorize]
-        public async Task<ActionResult<Run>> VerifyRun(VerifyRunDto request)
+        [HttpPut("verify"), Authorize]
+        public async Task<ActionResult<Run>> VerifyRun(VerifyDto request)
         {
-            var submission = await _context.Submissions.FindAsync(request.SubmissionId);
-            if (submission == null)
+            var run = await _context.Runs.FindAsync(request.RunId);
+            if (run == null)
                 return NotFound();
 
-            var game = await _context.Games.FindAsync(submission.GameId);
-            if (game == null)
-                return NotFound();
+            run.Status = (int)Status.Verified;
+            run.VerifiedBy = request.ModName;
+            run.VerifiedDate = DateTime.UtcNow;
 
-            var category = await _context.Categories.FindAsync(submission.CategoryId);
-            if (category == null)
-                return NotFound();
+            //makes current board run obsolete
+            var hasSubcategory = run.SubCategory != null;
 
-            var user = await _context.Users.Where(x => x.Username == submission.PlayerName).FirstOrDefaultAsync();
-            if (user == null)
-                return NotFound();
+            await UpdateCurrentVerifiedRun(false, hasSubcategory, run);
 
-            var subCategory = await _context.Subcategories.FindAsync(submission.SubcategoryId);
-            if (subCategory == null && submission.SubcategoryId != 0)
-                return NotFound();
-
-            submission.Status = (int)Status.Verified;
-
-            var newRun = new Run
-            {
-                PlayerName = submission.PlayerName,
-                Game = game,
-                User = user,
-                Category = category,
-                Description = submission.Description,
-                Platform = submission.Platform,
-                Time = submission.Time,
-                VideoLinks = submission.VideoLinks,
-                Date = submission.Date,
-                SubmittedBy = submission.SubmittedBy,
-                SubCategory = subCategory,
-                SubmissionId = submission.Id,
-                VerifiedBy = request.VerifierName,
-                VerifiedDate = DateTime.UtcNow
-            };
-
-            if (submission.Variables != null) //remove this later? maybe just use json formatted strings?
-            {
-                var variables = JsonConvert.DeserializeObject<List<Variable>>(submission.Variables);
-
-                foreach (var item in variables)
-                {
-                    var variable = await _context.Variables
-                        .FirstAsync(v => v.Name == item.Name && v.Id == item.Id);
-
-                    if (variable != null)
-                    {
-                        var runvarRelationship = new RunVariable() { AssociatedRun = newRun, AssociatedVariable = variable };
-                        _context.RunVariables.Add(runvarRelationship);
-                    }
-                }
-            }
-
-            var currentVerifiedRun = new Run();
-
-            if (submission.SubcategoryId != 0)
-            {
-                currentVerifiedRun = _context.Runs
-                    .Where(p => p.PlayerName == submission.PlayerName)
-                    .Where(c => c.CategoryId == submission.CategoryId)
-                    .Where(sc => sc.SubcategoryId == submission.SubcategoryId)
-                    .Where(o => o.IsObsolete == false)
-                    .OrderBy(x => x.Time).FirstOrDefault();
-            }
-            else
-            {
-                currentVerifiedRun = _context.Runs
-                    .Where(p => p.PlayerName == submission.PlayerName)
-                    .Where(c => c.CategoryId == submission.CategoryId)
-                    .Where(o => o.IsObsolete == false)
-                    .OrderBy(x => x.Time).FirstOrDefault();
-            }
-
-            if(currentVerifiedRun != null)
-            {
-                if (currentVerifiedRun.Time < newRun.Time)
-                {
-                    newRun.IsObsolete = true;
-                }
-                else
-                {
-                    newRun.IsObsolete = false;
-                    currentVerifiedRun.IsObsolete = true;
-                }
-            }
-
-            _context.Runs.Add(newRun);
+            _context.Runs.Update(run);
             _context.SaveChanges();
 
             return Ok("Run verified");
         }
 
-        [HttpPost("reject/{submissionId}"), Authorize]
-        public async Task<ActionResult<string>> RejectRun(int submissionId)
+        [HttpPut("reject/{runId}"), Authorize]
+        public async Task<ActionResult<string>> RejectRun(RejectDto request)
         {
-            var submission = await _context.Submissions.FindAsync(submissionId);
-            if (submission == null)
+            var run = await _context.Runs.FindAsync(request.RunId);
+            if (run == null)
                 return NotFound();
 
-            var leaderboardRun = await _context.Runs.Where(x => x.SubmissionId == submissionId).FirstOrDefaultAsync();
+            run.Status = (int)Status.Rejected;
+            run.RejectedDate = DateTime.UtcNow;
+            run.RejectedBy = request.ModName;
+            run.RejectedReason = request.RejectedReason;
 
-            if(leaderboardRun != null)
-               _context.Runs.Remove(leaderboardRun);
+            run.VerifiedBy = null;
+            run.VerifiedDate = null;
 
-            submission.Status = (int)Status.Rejected;
+            var hasSubcategory = run.SubCategory != null;
+
+            //make last obsolete run visible
+            await UpdateCurrentVerifiedRun(true, hasSubcategory, run);
+
+            _context.Runs.Update(run);
             _context.SaveChanges();
 
             return Ok("Run rejected");
@@ -264,11 +201,13 @@ namespace HatCommunityWebsite.API.Controllers
                 .Include(c => c.Category)
                 .Include(sc => sc.SubCategory)
                 .Include(g => g.Game)
+                .Include(rv => rv.RunVariables)
+                .ThenInclude(v => v.AssociatedVariable)
                 .FirstOrDefaultAsync(x => x.Id == runId);
 
             if (run == null) 
                 return NotFound();
-
+             
             return run;
         }
 
@@ -282,9 +221,15 @@ namespace HatCommunityWebsite.API.Controllers
             if (run == null)
                 return NotFound();
 
-            if (run.IsObsolete)
+            if (run.IsObsolete && run.Status == (int)Status.Verified)
                 return string.Empty;
-            
+
+            if (run.IsObsolete && run.Status == (int)Status.Rejected)
+                return string.Empty;
+
+            if (run.Status == (int)Status.Pending)
+                return await GetPendingRunPlace(run);
+
             runs = await _context.Runs
                 .Where(x => x.IsObsolete == false)
                 .Where(x => x.CategoryId == run.CategoryId)
@@ -294,69 +239,6 @@ namespace HatCommunityWebsite.API.Controllers
             var orderedRuns = runs.OrderBy(x => x.Time).ToList();
 
             return (orderedRuns.FindIndex(x => x.Id == runId) + 1).ToString();
-        }
-
-        [HttpGet("getsubmissionplace/{submissionId}")] //optimize
-        public async Task<ActionResult<string>> GetSubmissionPlace(int submissionId)
-        {
-            var run = new Run();
-
-            var submission = await _context.Submissions.FirstOrDefaultAsync(r => r.Id == submissionId);
-
-            if (submission == null)
-                return NotFound();
-
-
-            if (submission.SubcategoryId != 0)
-            {
-                run = await _context.Runs
-                    .Where(x => x.IsObsolete == false)
-                    .Where(x => x.CategoryId == submission.CategoryId)
-                    .Where(x => x.SubcategoryId == submission.SubcategoryId)
-                    .OrderBy(x => x.Time)
-                    .FirstOrDefaultAsync();
-
-            }
-            else
-            {
-                run = await _context.Runs
-                    .Where(x => x.IsObsolete == false)
-                    .Where(x => x.CategoryId == submission.CategoryId)
-                    .OrderBy(x => x.Time)
-                    .FirstOrDefaultAsync();
-            }
-
-            if (run != null && run.Time < submission.Time)
-                return "(Obsolete)";
-
-            var runTimes = new List<double>();
-
-            if (submission.SubcategoryId != 0)
-            {
-                runTimes = await _context.Runs
-                    .Where(x => x.IsObsolete == false)
-                    .Where(x => x.CategoryId == submission.CategoryId)
-                    .Where(x => x.SubcategoryId == submission.SubcategoryId)
-                    .OrderBy(x => x.Time)
-                    .Select(x => x.Time)
-                    .ToListAsync();
-
-            }
-            else
-            {
-                runTimes = await _context.Runs
-                    .Where(x => x.IsObsolete == false)
-                    .Where(x => x.CategoryId == submission.CategoryId)
-                    .OrderBy(x => x.Time)
-                    .Select(x => x.Time)
-                    .ToListAsync();
-            }
-
-            runTimes.Add(submission.Time);
-
-            var orderedRuns = runTimes.OrderBy(x => x).ToList();
-
-            return (orderedRuns.FindIndex(x => x == submission.Time) + 1).ToString();
         }
 
         [HttpGet("getruns/{gameName}")]
@@ -374,24 +256,19 @@ namespace HatCommunityWebsite.API.Controllers
             return runs;
         }
 
-        [HttpGet("getsubmissions")]
-        public async Task<ActionResult<List<Submission>>> GetSubmissions()
+        [HttpGet("getall")]
+        public async Task<ActionResult<List<Run>>> GetAllRuns()
         {
-            var submissions = await _context.Submissions.ToListAsync();
+            var runs = await _context.Runs
+                .Include(c => c.Category)
+                .Include(sc => sc.SubCategory)
+                .Include(g => g.Game)
+                .Include(rv => rv.RunVariables)
+                .ThenInclude(v => v.AssociatedVariable)
+                .ToListAsync();
 
-            return submissions;
+            return runs;
         }
-
-        [HttpGet("getsubmission/{submissionId}")]
-        public async Task<ActionResult<Submission>> GetSubmission(int submissionId)
-        {
-            var submission = await _context.Submissions.FindAsync(submissionId);
-            if (submission == null)
-                return NotFound();
-
-            return submission;
-        }
-
 
         [HttpGet("getlevelruns/{levelId}")]
         public async Task<ActionResult<List<Run>>> GetIndividualLevelRuns(int levelId)
@@ -412,12 +289,20 @@ namespace HatCommunityWebsite.API.Controllers
             return platforms;
         }
 
-        [HttpGet("getsubmissionscount")]
-        public async Task<ActionResult<int>> GetSubmissionsCount()
+        [HttpGet("getpendingruns")]
+        public async Task<ActionResult<List<Run>>> GetPendingRuns()
         {
-            var submissions = await _context.Submissions.Where(x => x.Status == (int)Status.Pending).ToListAsync();
+            var runs = await _context.Runs.Where(x => x.Status == (int)Status.Pending).ToListAsync();
 
-            return submissions.Count;
+            return runs;
+        }
+
+        [HttpGet("getpendingrunscount")]
+        public async Task<ActionResult<int>> GetPendingRunsCount()
+        {
+            var runs = await _context.Runs.Where(x => x.Status == (int)Status.Pending).ToListAsync();
+
+            return runs.Count;
         }
 
         [HttpDelete("delete/{runId}"), Authorize]
@@ -428,31 +313,226 @@ namespace HatCommunityWebsite.API.Controllers
             if (run == null)
                 return NotFound();
 
-            var submission = await _context.Submissions.FindAsync(run.SubmissionId);
-
-            if(submission != null)
-                _context.Submissions.Remove(submission);
-
             _context.Runs.Remove(run);
             _context.SaveChanges();
 
             return Ok("Run deleted.");
         }
 
-        //fix this later
+        [HttpPut("update"), Authorize]
+        public async Task<ActionResult<Run>> UpdateRun(EditRunDto request)
+        {
+            var run = await _context.Runs
+                .Include(x=> x.RunVariables)
+                .FirstOrDefaultAsync(i => i.Id == request.RunId);
 
-        //[HttpDelete("deleterun/{runId}")]
-        //public IActionResult DeleteRun(int runId)
-        //{
-        //    _hatCommunityWebsiteServices.DeleteFullGameRun(runId);
-        //    return Ok();
-        //}        
+            if (run == null)
+                return NotFound();
 
-        //[HttpPut("editrun/{id}")] //fix
-        //public IActionResult EditRun([FromBody] FullGameRun run)
-        //{
-        //    _hatCommunityWebsiteServices.EditFullGameRun(run);
-        //    return Ok();
-        //}
+            if (request.SubcategoryId != run.SubcategoryId && request.SubcategoryId != 0)
+                run.SubCategory = await _context.Subcategories.FindAsync(request.SubcategoryId);
+
+            run.Date = request.Date;
+            run.Platform = request.Platform;
+            run.VideoLinks = request.VideoLinks;
+            run.Time = request.Time;
+            run.Status = (int)Status.Pending;
+            run.Description = request.Description;
+
+            if (request.Variables != null) //makes this spaghetti better
+            {
+                var variables = JsonConvert.DeserializeObject<List<Variable>>(request.Variables);
+
+                foreach (var item in variables) //THIS CAN BE IMPROVED
+                {
+                    var variable = await _context.Variables
+                        .FirstAsync(v => v.Name == item.Name && v.Id == item.Id);
+
+                    var runVar = run.RunVariables.FirstOrDefault(x => x.VariableId == item.Id);
+                    if (runVar != null)
+                    {
+                        run.RunVariables.Remove(runVar);
+                    }
+
+                    if (variable != null)
+                    {
+                        run.RunVariables.Add(new RunVariable
+                        {
+                            AssociatedRun = run,
+                            AssociatedVariable = variable
+                        });
+                    }
+                }
+            }
+
+            if (request.AutoVerify)
+            {
+                run.Status = (int)Status.Verified;
+            }
+            else
+            {
+                if(run.Status == (int)Status.Verified)
+                {
+                    var hasSubcategory = run.SubCategory != null;
+                    await UpdateCurrentVerifiedRun(true, hasSubcategory, run);
+                    run.Status = (int)Status.Pending;
+                }
+            }
+
+            _context.Update(run);
+            _context.SaveChanges();
+
+            return Ok("Run updated");
+        }
+
+        private async Task UpdateCurrentVerifiedRun(bool isRejection, bool hasSubcategory, Run run) //make this spaghetti better
+        {
+            if (isRejection)
+            {
+
+                var lastVerifiedRun = new Run();
+
+                if (hasSubcategory)
+                {
+                    lastVerifiedRun = await _context.Runs
+                        .Where(p => p.PlayerName == run.PlayerName)
+                        .Where(c => c.CategoryId == run.CategoryId)
+                        .Where(sc => sc.SubcategoryId == run.SubcategoryId)
+                        .Where(o => o.IsObsolete == true)
+                        .OrderBy(x => x.Time).FirstOrDefaultAsync();
+                }
+                else
+                {
+                    lastVerifiedRun = await _context.Runs
+                        .Where(p => p.PlayerName == run.PlayerName)
+                        .Where(c => c.CategoryId == run.CategoryId)
+                        .Where(o => o.IsObsolete == true)
+                        .OrderBy(x => x.Time).FirstOrDefaultAsync();
+                }
+
+                if(lastVerifiedRun != null)
+                {
+                    lastVerifiedRun.IsObsolete = false;
+                    _context.Runs.Update(lastVerifiedRun);
+                }
+
+                return;
+            }
+
+            var currentVerifiedRun = new Run();
+
+            if (hasSubcategory)
+            {
+                currentVerifiedRun = await _context.Runs
+                    .Where(p => p.PlayerName == run.PlayerName)
+                    .Where(c => c.CategoryId == run.CategoryId)
+                    .Where(sc => sc.SubcategoryId == run.SubcategoryId)
+                    .Where(o => o.IsObsolete == false)
+                    .OrderBy(x => x.Time).FirstOrDefaultAsync();
+            }
+            else
+            {
+                currentVerifiedRun = await _context.Runs
+                    .Where(p => p.PlayerName == run.PlayerName)
+                    .Where(c => c.CategoryId == run.CategoryId)
+                    .Where(o => o.IsObsolete == false)
+                    .OrderBy(x => x.Time).FirstOrDefaultAsync();
+            }
+
+            if (currentVerifiedRun != null)
+            {
+                if (currentVerifiedRun.Time < run.Time)
+                {
+                    run.IsObsolete = true;
+                }
+                else
+                {
+                    run.IsObsolete = false;
+                    currentVerifiedRun.IsObsolete = true;
+                    _context.Runs.Update(currentVerifiedRun);
+                }
+            }
+            else
+            {
+                run.IsObsolete = false;
+            }
+        }
+
+        private async Task GetRunVariables(RunDto request, Run newRun)
+        {
+            if (request.Variables != null) //makes this spaghetti better
+            {
+                var variables = JsonConvert.DeserializeObject<List<Variable>>(request.Variables);
+
+                foreach (var item in variables)
+                {
+                    var variable = await _context.Variables
+                        .FirstAsync(v => v.Name == item.Name && v.Id == item.Id);
+
+                    if (variable != null)
+                    {
+                        var runvarRelationship = new RunVariable() { AssociatedRun = newRun, AssociatedVariable = variable };
+                        _context.RunVariables.Add(runvarRelationship);
+                    }
+                }
+            }
+        }
+        private async Task<ActionResult<string>> GetPendingRunPlace(Run? pendingRun)
+        {
+            var currentVerifiedRun = new Run();
+
+            if (pendingRun.SubcategoryId != null && pendingRun.SubcategoryId != 0)
+            {
+                currentVerifiedRun = await _context.Runs
+                    .Where(x => x.IsObsolete == false)
+                    .Where(x => x.PlayerName == pendingRun.PlayerName)
+                    .Where(x => x.CategoryId == pendingRun.CategoryId)
+                    .Where(x => x.SubcategoryId == pendingRun.SubcategoryId)
+                    .OrderBy(x => x.Time)
+                    .FirstOrDefaultAsync();
+
+            }
+            else
+            {
+                currentVerifiedRun = await _context.Runs
+                    .Where(x => x.IsObsolete == false)
+                    .Where(x => x.PlayerName == pendingRun.PlayerName)
+                    .Where(x => x.CategoryId == pendingRun.CategoryId)
+                    .OrderBy(x => x.Time)
+                    .FirstOrDefaultAsync();
+            }
+
+            if (currentVerifiedRun != null && currentVerifiedRun.Time < pendingRun.Time)
+                return "(Obsolete)";
+
+            var runTimes = new List<double>();
+
+            if (pendingRun.SubcategoryId != null && pendingRun.SubcategoryId != 0)
+            {
+                runTimes = await _context.Runs
+                    .Where(x => x.IsObsolete == false)
+                    .Where(x => x.CategoryId == pendingRun.CategoryId)
+                    .Where(x => x.SubcategoryId == pendingRun.SubcategoryId)
+                    .OrderBy(x => x.Time)
+                    .Select(x => x.Time)
+                    .ToListAsync();
+
+            }
+            else
+            {
+                runTimes = await _context.Runs
+                    .Where(x => x.IsObsolete == false)
+                    .Where(x => x.CategoryId == pendingRun.CategoryId)
+                    .OrderBy(x => x.Time)
+                    .Select(x => x.Time)
+                    .ToListAsync();
+            }
+
+            runTimes.Add(pendingRun.Time);
+
+            var orderedRuns = runTimes.OrderBy(x => x).ToList();
+
+            return (orderedRuns.FindIndex(x => x == pendingRun.Time) + 1).ToString();
+        }
     }
 }

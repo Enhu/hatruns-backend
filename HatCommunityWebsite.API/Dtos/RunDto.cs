@@ -8,7 +8,7 @@ namespace HatCommunityWebsite.API.Dtos
         public string Platform { get; set; }
         public string? Description { get; set; }
         public double Time { get; set; }
-        public string? VideoLinks { get; set; }
+        public string VideoLinks { get; set; }
         public DateTime Date { get; set; }
         public string SubmittedBy { get; set; }
         public bool? IsObsolete { get; set; }
@@ -16,5 +16,6 @@ namespace HatCommunityWebsite.API.Dtos
         public int GameId { get; set; }
         public int CategoryId { get; set; }
         public int? SubcategoryId { get; set; }
+        public bool AutoVerify { get; set; }
     }
 }

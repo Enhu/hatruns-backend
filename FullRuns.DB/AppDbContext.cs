@@ -12,7 +12,6 @@ namespace FullRuns.DB
         public DbSet<Variable> Variables { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Platform> Platforms { get; set; }
-        public DbSet<Submission> Submissions { get; set; }
         public DbSet<RunVariable> RunVariables { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
