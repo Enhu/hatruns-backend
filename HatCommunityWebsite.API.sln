@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HatCommunityWebsite.API", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HatCommunityWebsite.DB", "FullRuns.DB\HatCommunityWebsite.DB.csproj", "{9755B0DE-F915-4E00-8312-F0379B265A07}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HatCommunityWebsite.Core", "HatCommunityWebsite.Core\HatCommunityWebsite.Core.csproj", "{5AFE21E9-D47B-4FF2-A443-A2000FBFDCCC}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,10 +21,6 @@ Global
 		{9755B0DE-F915-4E00-8312-F0379B265A07}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9755B0DE-F915-4E00-8312-F0379B265A07}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9755B0DE-F915-4E00-8312-F0379B265A07}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5AFE21E9-D47B-4FF2-A443-A2000FBFDCCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5AFE21E9-D47B-4FF2-A443-A2000FBFDCCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5AFE21E9-D47B-4FF2-A443-A2000FBFDCCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5AFE21E9-D47B-4FF2-A443-A2000FBFDCCC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

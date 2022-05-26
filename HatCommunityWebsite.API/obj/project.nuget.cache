@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "JYWkiI3Sb/+qY9BC7cwupRRey2j4IWGNlCioNm2+yBNOpG3QRWdE0x8ZzSquwnurjFB+oeJVvXUF7ClWXfXVkw==",
+  "dgSpecHash": "zfg6HKXH+FQg1s75CHA7UyI4rV/eW4FE2jB8fVrRXvqj6U6y6J9IpwmK8u6YZq/TTPDyPZ8hTxjJGGt8rKzMKA==",
   "success": true,
   "projectFilePath": "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\HatCommunityWebsite.API\\HatCommunityWebsite.API.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Enhu\\.nuget\\packages\\automapper\\11.0.1\\automapper.11.0.1.nupkg.sha512",
     "C:\\Users\\Enhu\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\Enhu\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\6.0.4\\microsoft.aspnetcore.authentication.jwtbearer.6.0.4.nupkg.sha512",
     "C:\\Users\\Enhu\\.nuget\\packages\\microsoft.aspnetcore.jsonpatch\\6.0.4\\microsoft.aspnetcore.jsonpatch.6.0.4.nupkg.sha512",

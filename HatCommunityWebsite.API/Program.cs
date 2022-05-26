@@ -1,5 +1,4 @@
 using FullRuns.DB;
-using HatCommunityWebsite.Core;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -12,7 +11,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>();
-builder.Services.AddTransient<IHatCommunityWebsiteServices, HatCommunityWebsiteServices>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("HatCommunityWebsitePolicy",

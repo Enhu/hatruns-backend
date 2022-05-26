@@ -8,7 +8,7 @@
     ".NETCoreApp,Version=v6.0": {
       "HatCommunityWebsite.API/1.0.0": {
         "dependencies": {
-          "HatCommunityWebsite.Core": "1.0.0",
+          "AutoMapper": "11.0.1",
           "HatCommunityWebsite.DB": "1.0.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "6.0.4",
           "Microsoft.AspNetCore.Mvc.NewtonsoftJson": "6.0.4",
@@ -20,6 +20,17 @@
         },
         "runtime": {
           "HatCommunityWebsite.API.dll": {}
+        }
+      },
+      "AutoMapper/11.0.1": {
+        "dependencies": {
+          "Microsoft.CSharp": "4.7.0"
+        },
+        "runtime": {
+          "lib/netstandard2.1/AutoMapper.dll": {
+            "assemblyVersion": "11.0.0.0",
+            "fileVersion": "11.0.1.0"
+          }
         }
       },
       "Humanizer.Core/2.8.26": {
@@ -583,17 +594,6 @@
           }
         }
       },
-      "HatCommunityWebsite.Core/1.0.0": {
-        "dependencies": {
-          "HatCommunityWebsite.DB": "1.0.0",
-          "Microsoft.AspNetCore.Mvc.NewtonsoftJson": "6.0.4",
-          "Microsoft.IdentityModel.Tokens": "6.17.0",
-          "System.IdentityModel.Tokens.Jwt": "6.17.0"
-        },
-        "runtime": {
-          "HatCommunityWebsite.Core.dll": {}
-        }
-      },
       "HatCommunityWebsite.DB/1.0.0": {
         "dependencies": {
           "Microsoft.AspNetCore.Mvc.NewtonsoftJson": "6.0.4",
@@ -613,6 +613,13 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "AutoMapper/11.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-WIadGC1pIwbnyTubvI577p3F++Bsj9q2Q3OaAc1I0QS+JhupN1xkdrPBhI9bPIeg63zM81tZplUNYkqU1HE5jQ==",
+      "path": "automapper/11.0.1",
+      "hashPath": "automapper.11.0.1.nupkg.sha512"
     },
     "Humanizer.Core/2.8.26": {
       "type": "package",
@@ -1019,11 +1026,6 @@
       "sha512": "sha512-CeWTdRNfRaSh0pm2gDTJFwVaXfTq6Xwv/sA887iwPTneW7oMtMlpvDIO+U60+3GWTB7Aom6oQwv5VZVUhQRdPQ==",
       "path": "system.windows.extensions/4.7.0",
       "hashPath": "system.windows.extensions.4.7.0.nupkg.sha512"
-    },
-    "HatCommunityWebsite.Core/1.0.0": {
-      "type": "project",
-      "serviceable": false,
-      "sha512": ""
     },
     "HatCommunityWebsite.DB/1.0.0": {
       "type": "project",

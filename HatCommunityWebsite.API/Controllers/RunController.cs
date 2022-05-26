@@ -1,6 +1,5 @@
 using FullRuns.DB;
 using HatCommunityWebsite.API.Dtos;
-using HatCommunityWebsite.Core;
 using HatCommunityWebsite.DB;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc;
@@ -28,7 +27,7 @@ namespace HatCommunityWebsite.API.Controllers
         {
             _logger = logger;
             _context = context;
-        }     
+        }
 
         [HttpPost("submit"), Authorize]
         public async Task<ActionResult<Run>> SubmitRun(RunDto request)
@@ -75,7 +74,7 @@ namespace HatCommunityWebsite.API.Controllers
                 await UpdateCurrentVerifiedRun(false, hasSubcategory, newRun);
                 newRun.Status = (int)Status.Verified;
             }
-                
+
             _context.Runs.Add(newRun);
             await _context.SaveChangesAsync();
 
@@ -115,6 +114,7 @@ namespace HatCommunityWebsite.API.Controllers
             run.RejectedDate = DateTime.UtcNow;
             run.RejectedBy = request.ModName;
             run.RejectedReason = request.RejectedReason;
+            run.IsObsolete = true;
 
             run.VerifiedBy = null;
             run.VerifiedDate = null;
@@ -205,9 +205,9 @@ namespace HatCommunityWebsite.API.Controllers
                 .ThenInclude(v => v.AssociatedVariable)
                 .FirstOrDefaultAsync(x => x.Id == runId);
 
-            if (run == null) 
+            if (run == null)
                 return NotFound();
-             
+
             return run;
         }
 
@@ -239,6 +239,21 @@ namespace HatCommunityWebsite.API.Controllers
             var orderedRuns = runs.OrderBy(x => x.Time).ToList();
 
             return (orderedRuns.FindIndex(x => x.Id == runId) + 1).ToString();
+        }
+
+        private async Task<ActionResult<string>> GetRunPlace(Run run)
+        {
+            var runs = new List<Run>();
+
+            runs = await _context.Runs
+                .Where(x => x.IsObsolete == false)
+                .Where(x => x.CategoryId == run.CategoryId)
+                .Where(x => x.SubcategoryId == run.SubcategoryId)
+                .ToListAsync();
+
+            var orderedRuns = runs.OrderBy(x => x.Time).ToList();
+
+            return (orderedRuns.FindIndex(x => x.Id == run.Id) + 1).ToString();
         }
 
         [HttpGet("getruns/{gameName}")]
@@ -399,6 +414,7 @@ namespace HatCommunityWebsite.API.Controllers
                         .Where(c => c.CategoryId == run.CategoryId)
                         .Where(sc => sc.SubcategoryId == run.SubcategoryId)
                         .Where(o => o.IsObsolete == true)
+                        .Where(s => s.Status == (int)Status.Verified)
                         .OrderBy(x => x.Time).FirstOrDefaultAsync();
                 }
                 else
@@ -407,6 +423,7 @@ namespace HatCommunityWebsite.API.Controllers
                         .Where(p => p.PlayerName == run.PlayerName)
                         .Where(c => c.CategoryId == run.CategoryId)
                         .Where(o => o.IsObsolete == true)
+                        .Where(s => s.Status == (int)Status.Verified)
                         .OrderBy(x => x.Time).FirstOrDefaultAsync();
                 }
 
@@ -428,6 +445,7 @@ namespace HatCommunityWebsite.API.Controllers
                     .Where(c => c.CategoryId == run.CategoryId)
                     .Where(sc => sc.SubcategoryId == run.SubcategoryId)
                     .Where(o => o.IsObsolete == false)
+                    .Where(s => s.Status == (int)Status.Verified)
                     .OrderBy(x => x.Time).FirstOrDefaultAsync();
             }
             else
@@ -436,6 +454,7 @@ namespace HatCommunityWebsite.API.Controllers
                     .Where(p => p.PlayerName == run.PlayerName)
                     .Where(c => c.CategoryId == run.CategoryId)
                     .Where(o => o.IsObsolete == false)
+                    .Where(s => s.Status == (int)Status.Verified)
                     .OrderBy(x => x.Time).FirstOrDefaultAsync();
             }
 
