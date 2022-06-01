@@ -1,0 +1,17 @@
+﻿namespace HatCommunityWebsite.Service.Dtos
+{
+    public class SubmissionDto
+    {
+        public List<int>? UserIds { get; set; } 
+        public string Platform { get; set; }
+        public string? Description { get; set; }
+        public double Time { get; set; }
+        public List<string> Videos { get; set; }
+        public DateTime Date { get; set; }
+        public string? Variables { get; set; }
+        public int GameId { get; set; }
+        public int CategoryId { get; set; }
+        public int? SubcategoryId { get; set; }
+        public bool AutoVerify { get; set; }
+    }
+}

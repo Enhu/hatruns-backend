@@ -1,11 +1,4 @@
-﻿using FullRuns.DB;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using Newtonsoft.Json;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace HatCommunityWebsite.DB
 {
@@ -13,16 +6,15 @@ namespace HatCommunityWebsite.DB
     {
         [Key]
         public int Id { get; set; }
+
         public string Name { get; set; }
         public string Value { get; set; }
         public bool IsDefault { get; set; }
 
-        //Navigation Properties
-        [JsonIgnore]
-        public List<RunVariable> RunVariables { get; set; }
-        [JsonIgnore]
-        public int GameId { get; set; }
-        [JsonIgnore]
+        //navigation properties
+        public ICollection<RunVariable> RunVariables { get; set; }
+
         public Game Game { get; set; }
+        public int GameId { get; set; }
     }
 }

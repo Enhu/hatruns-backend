@@ -1,11 +1,5 @@
-﻿using FullRuns.DB;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
+﻿using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HatCommunityWebsite.DB
 {
@@ -13,17 +7,19 @@ namespace HatCommunityWebsite.DB
     {
         [Key]
         public int Id { get; set; }
+
         public string Name { get; set; }
         public string Rules { get; set; }
-        public bool? IsLevel { get; set; }
-        public bool? IsConsole { get; set; }
+        public bool IsConsole { get; set; }
+        public bool HasSubcategories => Subcategories.Count > 0;
 
-        //Navigation Properties
-        [JsonIgnore]
-        public List<Run> Runs { get; set; }
-        public List<SubCategory>? SubCategories { get; set; }
-        public int GameId { get; set; }
-        [JsonIgnore]
+        //navigation properties
+        public ICollection<Run> Runs { get; set; }
+
+        public ICollection<Subcategory> Subcategories { get; set; }
         public Game Game { get; set; }
+        public int GameId { get; set; }
+        public Level? Level { get; set; }
+        public int? LevelId { get; set; }
     }
 }

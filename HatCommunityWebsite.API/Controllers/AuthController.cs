@@ -5,112 +5,90 @@ using System.Security.Cryptography;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using FullRuns.DB;
+using HatCommunityWebsite.DB;
 using Microsoft.EntityFrameworkCore;
+using HatCommunityWebsite.Service.Responses;
+using HatCommunityWebsite.Service;
+using HatCommunityWebsite.Service.Dtos;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HatCommunityWebsite.API.Controllers
 {
-
-    public enum Roles
-    {
-        ROLE_BASIC = 0,
-        ROLE_VERIFIER = 1,
-        ROLE_MOD = 2
-    }
 
     [ApiController]
     [Route("[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly ILogger<RunController> _logger;
-        private readonly IConfiguration _config;
-        private readonly AppDbContext _context;
+        private readonly IAuthService _accountService;
 
-        public AuthController(AppDbContext context, ILogger<RunController> logger, IConfiguration config)
+        public AuthController(IAuthService accountService)
         {
-            _config = config;
-            _logger = logger;
-            _context = context;
-        }
+            _accountService = accountService;
 
+         }
+        [AllowAnonymous]
         [HttpPost("register")]
-        public async Task<ActionResult<User>> Register(UserDto request)
+        public IActionResult Register(UserDto request)
         {
-            CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
+            _accountService.Register(request, Request.Headers["origin"]);
+            return Ok(new { message = "Registration successful, please check your email for verification instructions" });
+        }
+        [AllowAnonymous]
+        [HttpPost("verify-account")]
+        public IActionResult VerifyAccount(VerifyUserDto request)
+        {
+            _accountService.VerifyEmail(request.Token);
+            return Ok(new { message = "Verification successful, you can now login" });
+        }
+        [AllowAnonymous]
+        [HttpPost("authenticate")]
+        public ActionResult<AuthenticateResponse> Authenticate(HatCommunityWebsite.Service.Dtos.LogInDto request)
+        {
+            var response = _accountService.Authenticate(request, ipAddress());
+            setRefreshTokenCookie(response.RefreshToken.Token, response.RefreshToken.Expires);
+            return Ok(response);
+        }
 
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.Username == request.Username);
-            if (user != null)
-                return BadRequest("User already exists.");
+        [Authorize]
+        [HttpPost("refresh-token")]
+        public ActionResult<AuthenticateResponse> RefreshToken()
+        {
+            var refreshToken = Request.Cookies["refreshToken"];
+            var response = _accountService.RefreshToken(refreshToken, ipAddress());
+            setRefreshTokenCookie(response.RefreshToken.Token, response.RefreshToken.Expires);
+            return Ok(response);
+        }
+        [AllowAnonymous]
+        [HttpPost("forgot-password")]
+        public IActionResult ForgotPassword(ForgotPasswordDto request)
+        {
+            _accountService.ForgotPassword(request, Request.Headers["origin"]);
+            return Ok(new { message = "Please check your email for password reset instructions" });
+        }
+        [AllowAnonymous]
+        [HttpPost("reset-password")]
+        public IActionResult ResetPassword(ResetPasswordDto request)
+        {
+            _accountService.ResetPassword(request);
+            return Ok(new { message = "Password reset successful, you can now login" });
+        }
 
-            var newUser = new User
+        private void setRefreshTokenCookie(string token, DateTime expires)
+        {
+            var cookieOptions = new CookieOptions
             {
-                Username = request.Username,
-                PasswordHash = passwordHash,
-                PasswordSalt = passwordSalt,
-                Email = request.Email,
-                Role = 0,
-                Created = DateTime.UtcNow,
+                HttpOnly = true,
+                Expires = expires
             };
-
-            _context.Users.Add(newUser);
-            await _context.SaveChangesAsync();
-
-            return Ok("User created");
+            Response.Cookies.Append("refreshToken", token, cookieOptions);
         }
 
-        [HttpPost("login")]
-        public async Task<ActionResult<string>> Login(LogInDto request)
+        private string ipAddress()
         {
-
-            var user = await _context.Users.FirstOrDefaultAsync(x => x.Username == request.Username);
-            if (user == null)
-                return BadRequest("Username not found.");
-
-            if(!VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
-                return BadRequest("Wrong password.");
-
-            string token = CreateToken(user);
-
-            return Ok(new { accessToken = token, role = ((Roles)user.Role).ToString(), username = user.Username});
+            if (Request.Headers.ContainsKey("X-Forwarded-For"))
+                return Request.Headers["X-Forwarded-For"];
+            else
+                return HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
         }
-
-        private string CreateToken(User user)
-        {
-            List<Claim> claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Role, ((Roles)user.Role).ToString())
-            };
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-                _config.GetSection("AppSettings:Token").Value));
-
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-
-            var token = new JwtSecurityToken(
-                claims: claims,
-                expires: DateTime.Now.AddDays(1),
-                signingCredentials: creds);
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
-
-        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
-        {
-            using (var hmac = new HMACSHA512())
-            {
-                passwordSalt = hmac.Key;
-                passwordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
-            }
-        }
-
-        private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
-        {
-            using (var hmac = new HMACSHA512(passwordSalt))
-            {
-                var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
-                return computedHash.SequenceEqual(passwordHash);
-            }
-        } 
     }
 }

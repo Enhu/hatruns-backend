@@ -1,0 +1,249 @@
+﻿++Solution 'HatCommunityWebsite.API' ‎(4 of 4 projects)
+i:{00000000-0000-0000-0000-000000000000}:HatCommunityWebsite.API.sln
+++HatCommunityWebsite.API
+i:{00000000-0000-0000-0000-000000000000}:HatCommunityWebsite.API
+++Connected Services 
+i:{c3aa70eb-af85-4659-b1e5-5c82a1ec2350}:>516
+++Dependencies
+i:{c3aa70eb-af85-4659-b1e5-5c82a1ec2350}:>515
+i:{9755b0de-f915-4e00-8312-f0379b265a07}:>374
+i:{3feb730a-9257-4ad9-895d-45e5403f29a5}:>372
+i:{c89577e9-75f8-427a-a591-975811a08ace}:>373
+++Properties
+i:{c3aa70eb-af85-4659-b1e5-5c82a1ec2350}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.api\properties\
+++Controllers
+i:{c3aa70eb-af85-4659-b1e5-5c82a1ec2350}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.api\controllers\
+++Dtos
+i:{c89577e9-75f8-427a-a591-975811a08ace}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.service\dtos\
+++Helpers
+i:{c89577e9-75f8-427a-a591-975811a08ace}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.service\helpers\
+++Services
+++appsettings.json
+i:{c3aa70eb-af85-4659-b1e5-5c82a1ec2350}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.api\appsettings.json
+++Program.cs
+i:{c3aa70eb-af85-4659-b1e5-5c82a1ec2350}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.api\program.cs
+++No service dependencies discovered
+i:{c3aa70eb-af85-4659-b1e5-5c82a1ec2350}:>517
+++Analyzers
+i:{c3aa70eb-af85-4659-b1e5-5c82a1ec2350}:analyzers
+i:{9755b0de-f915-4e00-8312-f0379b265a07}:analyzers
+i:{3feb730a-9257-4ad9-895d-45e5403f29a5}:analyzers
+i:{c89577e9-75f8-427a-a591-975811a08ace}:analyzers
+++Frameworks
+i:{c3aa70eb-af85-4659-b1e5-5c82a1ec2350}:frameworks
+i:{9755b0de-f915-4e00-8312-f0379b265a07}:frameworks
+i:{3feb730a-9257-4ad9-895d-45e5403f29a5}:frameworks
+i:{c89577e9-75f8-427a-a591-975811a08ace}:frameworks
+++Packages
+i:{c3aa70eb-af85-4659-b1e5-5c82a1ec2350}:packages
+i:{9755b0de-f915-4e00-8312-f0379b265a07}:packages
+i:{c89577e9-75f8-427a-a591-975811a08ace}:packages
+++Projects
+i:{c3aa70eb-af85-4659-b1e5-5c82a1ec2350}:projects
+i:{3feb730a-9257-4ad9-895d-45e5403f29a5}:projects
+i:{c89577e9-75f8-427a-a591-975811a08ace}:projects
+++launchSettings.json
+i:{c3aa70eb-af85-4659-b1e5-5c82a1ec2350}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.api\properties\launchsettings.json
+++AuthController.cs
+i:{c3aa70eb-af85-4659-b1e5-5c82a1ec2350}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.api\controllers\authcontroller.cs
+++CategoryController.cs
+i:{c3aa70eb-af85-4659-b1e5-5c82a1ec2350}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.api\controllers\categorycontroller.cs
+++GameController.cs
+i:{c3aa70eb-af85-4659-b1e5-5c82a1ec2350}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.api\controllers\gamecontroller.cs
+++RunController.cs
+i:{c3aa70eb-af85-4659-b1e5-5c82a1ec2350}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.api\controllers\runcontroller.cs
+++SubcategoryController.cs
+i:{c3aa70eb-af85-4659-b1e5-5c82a1ec2350}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.api\controllers\subcategorycontroller.cs
+++UserController.cs
+i:{c3aa70eb-af85-4659-b1e5-5c82a1ec2350}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.api\controllers\usercontroller.cs
+++CategoryDto.cs
+i:{c89577e9-75f8-427a-a591-975811a08ace}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.service\dtos\categorydto.cs
+++EditRunDto.cs
+++ForgotPasswordDto.cs
+i:{c89577e9-75f8-427a-a591-975811a08ace}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.service\dtos\forgotpassworddto.cs
+++GameDto.cs
+i:{c89577e9-75f8-427a-a591-975811a08ace}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.service\dtos\gamedto.cs
+++LogInDto.cs
+i:{c89577e9-75f8-427a-a591-975811a08ace}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.service\dtos\logindto.cs
+++RejectDto.cs
+++RunDto.cs
+++UserDto.cs
+i:{c89577e9-75f8-427a-a591-975811a08ace}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.service\dtos\userdto.cs
+++VerifyDto.cs
+++AuthService.cs
+i:{c89577e9-75f8-427a-a591-975811a08ace}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.service\authservice.cs
+++appsettings.Development.json
+i:{c3aa70eb-af85-4659-b1e5-5c82a1ec2350}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.api\appsettings.development.json
+++Microsoft.AspNetCore.Analyzers
+i:{c3aa70eb-af85-4659-b1e5-5c82a1ec2350}:c:\program files\dotnet\sdk\6.0.202\sdks\microsoft.net.sdk.web\analyzers\cs\microsoft.aspnetcore.analyzers.dll
+++Microsoft.AspNetCore.App.Analyzers
+i:{c3aa70eb-af85-4659-b1e5-5c82a1ec2350}:c:\program files\dotnet\packs\microsoft.aspnetcore.app.ref\6.0.4\analyzers\dotnet\cs\microsoft.aspnetcore.app.analyzers.dll
+i:{9755b0de-f915-4e00-8312-f0379b265a07}:c:\program files\dotnet\packs\microsoft.aspnetcore.app.ref\6.0.4\analyzers\dotnet\cs\microsoft.aspnetcore.app.analyzers.dll
+i:{3feb730a-9257-4ad9-895d-45e5403f29a5}:c:\program files\dotnet\packs\microsoft.aspnetcore.app.ref\6.0.4\analyzers\dotnet\cs\microsoft.aspnetcore.app.analyzers.dll
+i:{c89577e9-75f8-427a-a591-975811a08ace}:c:\program files\dotnet\packs\microsoft.aspnetcore.app.ref\6.0.4\analyzers\dotnet\cs\microsoft.aspnetcore.app.analyzers.dll
+++Microsoft.AspNetCore.App.CodeFixes
+i:{c3aa70eb-af85-4659-b1e5-5c82a1ec2350}:c:\program files\dotnet\packs\microsoft.aspnetcore.app.ref\6.0.4\analyzers\dotnet\cs\microsoft.aspnetcore.app.codefixes.dll
+i:{9755b0de-f915-4e00-8312-f0379b265a07}:c:\program files\dotnet\packs\microsoft.aspnetcore.app.ref\6.0.4\analyzers\dotnet\cs\microsoft.aspnetcore.app.codefixes.dll
+i:{3feb730a-9257-4ad9-895d-45e5403f29a5}:c:\program files\dotnet\packs\microsoft.aspnetcore.app.ref\6.0.4\analyzers\dotnet\cs\microsoft.aspnetcore.app.codefixes.dll
+i:{c89577e9-75f8-427a-a591-975811a08ace}:c:\program files\dotnet\packs\microsoft.aspnetcore.app.ref\6.0.4\analyzers\dotnet\cs\microsoft.aspnetcore.app.codefixes.dll
+++Microsoft.AspNetCore.Components.Analyzers
+i:{c3aa70eb-af85-4659-b1e5-5c82a1ec2350}:c:\program files\dotnet\sdk\6.0.202\sdks\microsoft.net.sdk.web\analyzers\cs\microsoft.aspnetcore.components.analyzers.dll
+++Microsoft.AspNetCore.Mvc.Analyzers
+i:{c3aa70eb-af85-4659-b1e5-5c82a1ec2350}:c:\program files\dotnet\sdk\6.0.202\sdks\microsoft.net.sdk.web\analyzers\cs\microsoft.aspnetcore.mvc.analyzers.dll
+++Microsoft.AspNetCore.Razor.SourceGenerator.Tooling.Internal
+i:{c3aa70eb-af85-4659-b1e5-5c82a1ec2350}:c:\program files\dotnet\sdk\6.0.202\sdks\microsoft.net.sdk.razor\source-generators\microsoft.aspnetcore.razor.sourcegenerator.tooling.internal.dll
+++Microsoft.CodeAnalysis.CSharp.NetAnalyzers
+i:{c3aa70eb-af85-4659-b1e5-5c82a1ec2350}:c:\program files\dotnet\sdk\6.0.202\sdks\microsoft.net.sdk\analyzers\microsoft.codeanalysis.csharp.netanalyzers.dll
+i:{9755b0de-f915-4e00-8312-f0379b265a07}:c:\program files\dotnet\sdk\6.0.202\sdks\microsoft.net.sdk\analyzers\microsoft.codeanalysis.csharp.netanalyzers.dll
+i:{3feb730a-9257-4ad9-895d-45e5403f29a5}:c:\program files\dotnet\sdk\6.0.202\sdks\microsoft.net.sdk\analyzers\microsoft.codeanalysis.csharp.netanalyzers.dll
+i:{c89577e9-75f8-427a-a591-975811a08ace}:c:\program files\dotnet\sdk\6.0.202\sdks\microsoft.net.sdk\analyzers\microsoft.codeanalysis.csharp.netanalyzers.dll
+++Microsoft.CodeAnalysis.NetAnalyzers
+i:{c3aa70eb-af85-4659-b1e5-5c82a1ec2350}:c:\program files\dotnet\sdk\6.0.202\sdks\microsoft.net.sdk\analyzers\microsoft.codeanalysis.netanalyzers.dll
+i:{9755b0de-f915-4e00-8312-f0379b265a07}:c:\program files\dotnet\sdk\6.0.202\sdks\microsoft.net.sdk\analyzers\microsoft.codeanalysis.netanalyzers.dll
+i:{3feb730a-9257-4ad9-895d-45e5403f29a5}:c:\program files\dotnet\sdk\6.0.202\sdks\microsoft.net.sdk\analyzers\microsoft.codeanalysis.netanalyzers.dll
+i:{c89577e9-75f8-427a-a591-975811a08ace}:c:\program files\dotnet\sdk\6.0.202\sdks\microsoft.net.sdk\analyzers\microsoft.codeanalysis.netanalyzers.dll
+++Microsoft.EntityFrameworkCore.Analyzers
+i:{c3aa70eb-af85-4659-b1e5-5c82a1ec2350}:c:\users\enhu\.nuget\packages\microsoft.entityframeworkcore.analyzers\6.0.4\analyzers\dotnet\cs\microsoft.entityframeworkcore.analyzers.dll
+i:{9755b0de-f915-4e00-8312-f0379b265a07}:c:\users\enhu\.nuget\packages\microsoft.entityframeworkcore.analyzers\6.0.4\analyzers\dotnet\cs\microsoft.entityframeworkcore.analyzers.dll
+i:{3feb730a-9257-4ad9-895d-45e5403f29a5}:c:\users\enhu\.nuget\packages\microsoft.entityframeworkcore.analyzers\6.0.4\analyzers\dotnet\cs\microsoft.entityframeworkcore.analyzers.dll
+i:{c89577e9-75f8-427a-a591-975811a08ace}:c:\users\enhu\.nuget\packages\microsoft.entityframeworkcore.analyzers\6.0.4\analyzers\dotnet\cs\microsoft.entityframeworkcore.analyzers.dll
+++Microsoft.Extensions.Logging.Generators
+i:{c3aa70eb-af85-4659-b1e5-5c82a1ec2350}:c:\program files\dotnet\packs\microsoft.aspnetcore.app.ref\6.0.4\analyzers\dotnet\roslyn4.0\cs\microsoft.extensions.logging.generators.dll
+i:{9755b0de-f915-4e00-8312-f0379b265a07}:c:\program files\dotnet\packs\microsoft.aspnetcore.app.ref\6.0.4\analyzers\dotnet\roslyn4.0\cs\microsoft.extensions.logging.generators.dll
+i:{3feb730a-9257-4ad9-895d-45e5403f29a5}:c:\program files\dotnet\packs\microsoft.aspnetcore.app.ref\6.0.4\analyzers\dotnet\roslyn4.0\cs\microsoft.extensions.logging.generators.dll
+i:{c89577e9-75f8-427a-a591-975811a08ace}:c:\program files\dotnet\packs\microsoft.aspnetcore.app.ref\6.0.4\analyzers\dotnet\roslyn4.0\cs\microsoft.extensions.logging.generators.dll
+++Microsoft.NET.Sdk.Razor.SourceGenerators
+i:{c3aa70eb-af85-4659-b1e5-5c82a1ec2350}:c:\program files\dotnet\sdk\6.0.202\sdks\microsoft.net.sdk.razor\source-generators\microsoft.net.sdk.razor.sourcegenerators.dll
+++System.Text.Json.SourceGeneration
+i:{c3aa70eb-af85-4659-b1e5-5c82a1ec2350}:c:\program files\dotnet\packs\microsoft.netcore.app.ref\6.0.4\analyzers\dotnet\cs\system.text.json.sourcegeneration.dll
+i:{9755b0de-f915-4e00-8312-f0379b265a07}:c:\program files\dotnet\packs\microsoft.netcore.app.ref\6.0.4\analyzers\dotnet\cs\system.text.json.sourcegeneration.dll
+i:{3feb730a-9257-4ad9-895d-45e5403f29a5}:c:\program files\dotnet\packs\microsoft.netcore.app.ref\6.0.4\analyzers\dotnet\cs\system.text.json.sourcegeneration.dll
+i:{c89577e9-75f8-427a-a591-975811a08ace}:c:\program files\dotnet\packs\microsoft.netcore.app.ref\6.0.4\analyzers\dotnet\cs\system.text.json.sourcegeneration.dll
+++Microsoft.AspNetCore.App
+i:{c3aa70eb-af85-4659-b1e5-5c82a1ec2350}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.api\microsoft.aspnetcore.app
+++Microsoft.NETCore.App
+i:{c3aa70eb-af85-4659-b1e5-5c82a1ec2350}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.api\microsoft.netcore.app
+i:{9755b0de-f915-4e00-8312-f0379b265a07}:d:\enhu\documents\github\hatruns.com-backend\fullruns.db\microsoft.netcore.app
+i:{3feb730a-9257-4ad9-895d-45e5403f29a5}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.repo\microsoft.netcore.app
+i:{c89577e9-75f8-427a-a591-975811a08ace}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.service\microsoft.netcore.app
+++AutoMapper (11.0.1)
+i:{c3aa70eb-af85-4659-b1e5-5c82a1ec2350}:>579
+i:{c89577e9-75f8-427a-a591-975811a08ace}:>594
+++AutoMapper.Extensions.Microsoft.DependencyInjection (11.0.0)
+i:{c3aa70eb-af85-4659-b1e5-5c82a1ec2350}:>591
+++Microsoft.AspNetCore.Authentication.JwtBearer (6.0.4)
+i:{c3aa70eb-af85-4659-b1e5-5c82a1ec2350}:>580
+++Microsoft.AspNetCore.Mvc.NewtonsoftJson (6.0.4)
+i:{c3aa70eb-af85-4659-b1e5-5c82a1ec2350}:>578
+i:{9755b0de-f915-4e00-8312-f0379b265a07}:>564
+++Microsoft.EntityFrameworkCore.Design (6.0.4)
+i:{c3aa70eb-af85-4659-b1e5-5c82a1ec2350}:>574
+++Microsoft.IdentityModel.Tokens (6.17.0)
+i:{c3aa70eb-af85-4659-b1e5-5c82a1ec2350}:>581
+i:{9755b0de-f915-4e00-8312-f0379b265a07}:>567
+++Swashbuckle.AspNetCore (6.2.3)
+i:{c3aa70eb-af85-4659-b1e5-5c82a1ec2350}:>576
+++Swashbuckle.AspNetCore.Filters (7.0.2)
+i:{c3aa70eb-af85-4659-b1e5-5c82a1ec2350}:>577
+++System.IdentityModel.Tokens.Jwt (6.17.0)
+i:{c3aa70eb-af85-4659-b1e5-5c82a1ec2350}:>575
+i:{9755b0de-f915-4e00-8312-f0379b265a07}:>563
+++HatCommunityWebsite.DB
+i:{c3aa70eb-af85-4659-b1e5-5c82a1ec2350}:d:\enhu\documents\github\hatruns.com-backend\fullruns.db\bin\debug\net6.0\hatcommunitywebsite.db.dll
+i:{00000000-0000-0000-0000-000000000000}:HatCommunityWebsite.DB
+i:{3feb730a-9257-4ad9-895d-45e5403f29a5}:d:\enhu\documents\github\hatruns.com-backend\fullruns.db\bin\debug\net6.0\hatcommunitywebsite.db.dll
+i:{c89577e9-75f8-427a-a591-975811a08ace}:d:\enhu\documents\github\hatruns.com-backend\fullruns.db\hatcommunitywebsite.db.csproj
+++Migrations
+i:{9755b0de-f915-4e00-8312-f0379b265a07}:d:\enhu\documents\github\hatruns.com-backend\fullruns.db\migrations\
+++AppDbContext.cs
+i:{9755b0de-f915-4e00-8312-f0379b265a07}:d:\enhu\documents\github\hatruns.com-backend\fullruns.db\appdbcontext.cs
+++Category.cs
+i:{9755b0de-f915-4e00-8312-f0379b265a07}:d:\enhu\documents\github\hatruns.com-backend\fullruns.db\category.cs
+++Game.cs
+i:{9755b0de-f915-4e00-8312-f0379b265a07}:d:\enhu\documents\github\hatruns.com-backend\fullruns.db\game.cs
+++Platform.cs
+i:{9755b0de-f915-4e00-8312-f0379b265a07}:d:\enhu\documents\github\hatruns.com-backend\fullruns.db\platform.cs
+++Run.cs
+i:{9755b0de-f915-4e00-8312-f0379b265a07}:d:\enhu\documents\github\hatruns.com-backend\fullruns.db\run.cs
+++RunVariable.cs
+i:{9755b0de-f915-4e00-8312-f0379b265a07}:d:\enhu\documents\github\hatruns.com-backend\fullruns.db\runvariable.cs
+++Subcategory.cs
+i:{9755b0de-f915-4e00-8312-f0379b265a07}:d:\enhu\documents\github\hatruns.com-backend\fullruns.db\subcategory.cs
+++User.cs
+i:{9755b0de-f915-4e00-8312-f0379b265a07}:d:\enhu\documents\github\hatruns.com-backend\fullruns.db\user.cs
+++Variable.cs
+i:{9755b0de-f915-4e00-8312-f0379b265a07}:d:\enhu\documents\github\hatruns.com-backend\fullruns.db\variable.cs
+++Microsoft.EntityFrameworkCore (6.0.4)
+i:{9755b0de-f915-4e00-8312-f0379b265a07}:>559
+++Microsoft.EntityFrameworkCore.SqlServer (6.0.4)
+i:{9755b0de-f915-4e00-8312-f0379b265a07}:>560
+++Microsoft.EntityFrameworkCore.Tools (6.0.4)
+i:{9755b0de-f915-4e00-8312-f0379b265a07}:>570
+++HatCommunityWebsite.Repo
+i:{00000000-0000-0000-0000-000000000000}:HatCommunityWebsite.Repo
+i:{c89577e9-75f8-427a-a591-975811a08ace}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.repo\hatcommunitywebsite.repo.csproj
+++UserRepository.cs
+i:{3feb730a-9257-4ad9-895d-45e5403f29a5}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.repo\userrepository.cs
+++HatCommunityWebsite.Service
+i:{00000000-0000-0000-0000-000000000000}:HatCommunityWebsite.Service
+i:{c3aa70eb-af85-4659-b1e5-5c82a1ec2350}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.service\hatcommunitywebsite.service.csproj
+++AppException.cs
+i:{c89577e9-75f8-427a-a591-975811a08ace}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.service\helpers\appexception.cs
+++AppSettings.cs
+i:{c89577e9-75f8-427a-a591-975811a08ace}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.service\helpers\appsettings.cs
+++JwtUtils.cs
+i:{c89577e9-75f8-427a-a591-975811a08ace}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.service\helpers\jwtutils.cs
+++Responses
+i:{c89577e9-75f8-427a-a591-975811a08ace}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.service\responses\
+++AuthenticateResponse.cs
+i:{c89577e9-75f8-427a-a591-975811a08ace}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.service\responses\authenticateresponse.cs
+++EmailService.cs
+i:{c89577e9-75f8-427a-a591-975811a08ace}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.service\emailservice.cs
+++ResetPasswordDto.cs
+i:{c89577e9-75f8-427a-a591-975811a08ace}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.service\dtos\resetpassworddto.cs
+++MailKit (3.2.0)
+i:{c89577e9-75f8-427a-a591-975811a08ace}:>555
+++20220527001214_Initial.cs
+i:{9755b0de-f915-4e00-8312-f0379b265a07}:d:\enhu\documents\github\hatruns.com-backend\fullruns.db\migrations\20220527001214_initial.cs
+++20220527001214_Initial.Designer.cs
+i:{9755b0de-f915-4e00-8312-f0379b265a07}:d:\enhu\documents\github\hatruns.com-backend\fullruns.db\migrations\20220527001214_initial.designer.cs
+++AppDbContextModelSnapshot.cs
+i:{9755b0de-f915-4e00-8312-f0379b265a07}:d:\enhu\documents\github\hatruns.com-backend\fullruns.db\migrations\appdbcontextmodelsnapshot.cs
+++VerifyUserDto.cs
+i:{c89577e9-75f8-427a-a591-975811a08ace}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.service\dtos\verifyuserdto.cs
+++ErrorHandlerMiddleware.cs
+i:{c89577e9-75f8-427a-a591-975811a08ace}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.service\helpers\errorhandlermiddleware.cs
+++Roles.cs
+++RunRepository.cs
+i:{3feb730a-9257-4ad9-895d-45e5403f29a5}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.repo\runrepository.cs
+++SubmissionService.cs
+i:{c89577e9-75f8-427a-a591-975811a08ace}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.service\submissionservice.cs
+++SubmissionStatus.cs
+i:{c89577e9-75f8-427a-a591-975811a08ace}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.service\helpers\submissionstatus.cs
+++UserRoles.cs
+i:{c89577e9-75f8-427a-a591-975811a08ace}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.service\helpers\userroles.cs
+++GameRepository.cs
+i:{3feb730a-9257-4ad9-895d-45e5403f29a5}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.repo\gamerepository.cs
+++CategoryRepository.cs
+i:{3feb730a-9257-4ad9-895d-45e5403f29a5}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.repo\categoryrepository.cs
+++SubcategoryRepository.cs
+i:{3feb730a-9257-4ad9-895d-45e5403f29a5}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.repo\subcategoryrepository.cs
+++AutoMapperProfile.cs
+i:{c89577e9-75f8-427a-a591-975811a08ace}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.service\helpers\automapperprofile.cs
+++SubmissionDto.cs
+i:{c89577e9-75f8-427a-a591-975811a08ace}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.service\dtos\rundto.cs
+++VariableRepository.cs
+i:{3feb730a-9257-4ad9-895d-45e5403f29a5}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.repo\variablerepository.cs
+++RunVariableRepository.cs
+i:{3feb730a-9257-4ad9-895d-45e5403f29a5}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.repo\runvariablerepository.cs
+++RejectSubmissionDto.cs
+i:{c89577e9-75f8-427a-a591-975811a08ace}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.service\dtos\rejectdto.cs
+++VerifySubmission.cs
+++UpdateSubmissionDto.cs
+i:{c89577e9-75f8-427a-a591-975811a08ace}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.service\dtos\updatesubmissiondto.cs
+++VerifySubmissionDto.cs
+i:{c89577e9-75f8-427a-a591-975811a08ace}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.service\dtos\verifysubmissiondto.cs
+++RunService.cs
+i:{c89577e9-75f8-427a-a591-975811a08ace}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.service\runservice.cs
+++RunResponse.cs
+i:{c89577e9-75f8-427a-a591-975811a08ace}:d:\enhu\documents\github\hatruns.com-backend\hatcommunitywebsite.service\responses\runresponse.cs

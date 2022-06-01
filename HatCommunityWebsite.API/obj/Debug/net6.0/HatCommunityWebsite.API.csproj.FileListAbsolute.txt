@@ -145,3 +145,11 @@ D:\Enhu\Documents\GitHub\Hatruns.com-backend\HatCommunityWebsite.API\obj\Debug\n
 D:\Enhu\Documents\GitHub\Hatruns.com-backend\HatCommunityWebsite.API\obj\Debug\net6.0\HatCommunityWebsite.API.pdb
 D:\Enhu\Documents\GitHub\Hatruns.com-backend\HatCommunityWebsite.API\obj\Debug\net6.0\HatCommunityWebsite.API.genruntimeconfig.cache
 D:\Enhu\Documents\GitHub\Hatruns.com-backend\HatCommunityWebsite.API\obj\Debug\net6.0\ref\HatCommunityWebsite.API.dll
+D:\Enhu\Documents\GitHub\Hatruns.com-backend\HatCommunityWebsite.API\bin\Debug\net6.0\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
+D:\Enhu\Documents\GitHub\Hatruns.com-backend\HatCommunityWebsite.API\bin\Debug\net6.0\MailKit.dll
+D:\Enhu\Documents\GitHub\Hatruns.com-backend\HatCommunityWebsite.API\bin\Debug\net6.0\MimeKit.dll
+D:\Enhu\Documents\GitHub\Hatruns.com-backend\HatCommunityWebsite.API\bin\Debug\net6.0\BouncyCastle.Crypto.dll
+D:\Enhu\Documents\GitHub\Hatruns.com-backend\HatCommunityWebsite.API\bin\Debug\net6.0\HatCommunityWebsite.Repo.dll
+D:\Enhu\Documents\GitHub\Hatruns.com-backend\HatCommunityWebsite.API\bin\Debug\net6.0\HatCommunityWebsite.Service.dll
+D:\Enhu\Documents\GitHub\Hatruns.com-backend\HatCommunityWebsite.API\bin\Debug\net6.0\HatCommunityWebsite.Service.pdb
+D:\Enhu\Documents\GitHub\Hatruns.com-backend\HatCommunityWebsite.API\bin\Debug\net6.0\HatCommunityWebsite.Repo.pdb

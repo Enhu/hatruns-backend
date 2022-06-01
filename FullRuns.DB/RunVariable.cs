@@ -1,9 +1,10 @@
-﻿using HatCommunityWebsite.DB;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace FullRuns.DB
+namespace HatCommunityWebsite.DB
 {
     public class RunVariable
     {
+        [Key]
         public int Id { get; set; }
 
         public int RunId { get; set; }
