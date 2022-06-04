@@ -9,7 +9,7 @@ namespace HatCommunityWebsite.Repo
 {
     public interface IRunVariableRepository
     {
-        void SetRunVariables(RunVariable runVariable);
+        void SetRunVariables(RunVariableValue runVariable);
     }
     public class RunVariableRepository : IRunVariableRepository
     {
@@ -19,7 +19,7 @@ namespace HatCommunityWebsite.Repo
             _context = context;
         }
 
-        public void SetRunVariables(RunVariable runVariable)
+        public void SetRunVariables(RunVariableValue runVariable)
         {
             _context.RunVariables.Add(runVariable);
         }

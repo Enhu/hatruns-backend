@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HatCommunityWebsite.DB.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220530224740_Initial")]
+    [Migration("20220603233907_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,6 +39,12 @@ namespace HatCommunityWebsite.DB.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
+
+                    b.Property<bool>("IsCustom")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("bit");
 
                     b.Property<int?>("LevelId")
                         .HasColumnType("int");
@@ -103,11 +109,15 @@ namespace HatCommunityWebsite.DB.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Rules")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("GameId");
 
-                    b.ToTable("Level");
+                    b.ToTable("Levels");
                 });
 
             modelBuilder.Entity("HatCommunityWebsite.DB.Platform", b =>
@@ -135,7 +145,7 @@ namespace HatCommunityWebsite.DB.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("CategoryId")
+                    b.Property<int?>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Date")
@@ -148,10 +158,6 @@ namespace HatCommunityWebsite.DB.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Platform")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PlayerName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -180,18 +186,11 @@ namespace HatCommunityWebsite.DB.Migrations
                     b.Property<double>("Time")
                         .HasColumnType("float");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.Property<string>("VerifiedBy")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("VerifiedDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("VideoLinks")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -199,12 +198,10 @@ namespace HatCommunityWebsite.DB.Migrations
 
                     b.HasIndex("SubcategoryId");
 
-                    b.HasIndex("UserId");
-
                     b.ToTable("Runs");
                 });
 
-            modelBuilder.Entity("HatCommunityWebsite.DB.RunVariable", b =>
+            modelBuilder.Entity("HatCommunityWebsite.DB.RunUser", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -215,14 +212,37 @@ namespace HatCommunityWebsite.DB.Migrations
                     b.Property<int>("RunId")
                         .HasColumnType("int");
 
-                    b.Property<int>("VariableId")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("RunId");
 
-                    b.HasIndex("VariableId");
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RunUsers");
+                });
+
+            modelBuilder.Entity("HatCommunityWebsite.DB.RunVariableValue", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("RunId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("VariableValueId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RunId");
+
+                    b.HasIndex("VariableValueId");
 
                     b.ToTable("RunVariables");
                 });
@@ -356,14 +376,7 @@ namespace HatCommunityWebsite.DB.Migrations
                     b.Property<int>("GameId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsDefault")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Value")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -372,6 +385,53 @@ namespace HatCommunityWebsite.DB.Migrations
                     b.HasIndex("GameId");
 
                     b.ToTable("Variables");
+                });
+
+            modelBuilder.Entity("HatCommunityWebsite.DB.VariableValue", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("VariableId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VariableId");
+
+                    b.ToTable("VariableValues");
+                });
+
+            modelBuilder.Entity("HatCommunityWebsite.DB.Video", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Link")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("RunId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RunId");
+
+                    b.ToTable("Videos");
                 });
 
             modelBuilder.Entity("HatCommunityWebsite.DB.Category", b =>
@@ -408,44 +468,54 @@ namespace HatCommunityWebsite.DB.Migrations
                     b.HasOne("HatCommunityWebsite.DB.Category", "Category")
                         .WithMany("Runs")
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("HatCommunityWebsite.DB.Subcategory", "SubCategory")
                         .WithMany("Runs")
                         .HasForeignKey("SubcategoryId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
-                    b.HasOne("HatCommunityWebsite.DB.User", "User")
-                        .WithMany("Runs")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Category");
 
                     b.Navigation("SubCategory");
-
-                    b.Navigation("User");
                 });
 
-            modelBuilder.Entity("HatCommunityWebsite.DB.RunVariable", b =>
+            modelBuilder.Entity("HatCommunityWebsite.DB.RunUser", b =>
                 {
                     b.HasOne("HatCommunityWebsite.DB.Run", "AssociatedRun")
-                        .WithMany("RunVariables")
+                        .WithMany("RunUsers")
                         .HasForeignKey("RunId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("HatCommunityWebsite.DB.Variable", "AssociatedVariable")
-                        .WithMany("RunVariables")
-                        .HasForeignKey("VariableId")
+                    b.HasOne("HatCommunityWebsite.DB.User", "AssociatedUser")
+                        .WithMany("RunUsers")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("AssociatedRun");
 
-                    b.Navigation("AssociatedVariable");
+                    b.Navigation("AssociatedUser");
+                });
+
+            modelBuilder.Entity("HatCommunityWebsite.DB.RunVariableValue", b =>
+                {
+                    b.HasOne("HatCommunityWebsite.DB.Run", "AssociatedRun")
+                        .WithMany("RunVariableValues")
+                        .HasForeignKey("RunId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("HatCommunityWebsite.DB.VariableValue", "AssociatedVariableValue")
+                        .WithMany("RunVariables")
+                        .HasForeignKey("VariableValueId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("AssociatedRun");
+
+                    b.Navigation("AssociatedVariableValue");
                 });
 
             modelBuilder.Entity("HatCommunityWebsite.DB.Subcategory", b =>
@@ -468,6 +538,28 @@ namespace HatCommunityWebsite.DB.Migrations
                         .IsRequired();
 
                     b.Navigation("Game");
+                });
+
+            modelBuilder.Entity("HatCommunityWebsite.DB.VariableValue", b =>
+                {
+                    b.HasOne("HatCommunityWebsite.DB.Variable", "Variable")
+                        .WithMany("Values")
+                        .HasForeignKey("VariableId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Variable");
+                });
+
+            modelBuilder.Entity("HatCommunityWebsite.DB.Video", b =>
+                {
+                    b.HasOne("HatCommunityWebsite.DB.Run", "Run")
+                        .WithMany("Videos")
+                        .HasForeignKey("RunId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Run");
                 });
 
             modelBuilder.Entity("HatCommunityWebsite.DB.Category", b =>
@@ -493,7 +585,11 @@ namespace HatCommunityWebsite.DB.Migrations
 
             modelBuilder.Entity("HatCommunityWebsite.DB.Run", b =>
                 {
-                    b.Navigation("RunVariables");
+                    b.Navigation("RunUsers");
+
+                    b.Navigation("RunVariableValues");
+
+                    b.Navigation("Videos");
                 });
 
             modelBuilder.Entity("HatCommunityWebsite.DB.Subcategory", b =>
@@ -503,10 +599,15 @@ namespace HatCommunityWebsite.DB.Migrations
 
             modelBuilder.Entity("HatCommunityWebsite.DB.User", b =>
                 {
-                    b.Navigation("Runs");
+                    b.Navigation("RunUsers");
                 });
 
             modelBuilder.Entity("HatCommunityWebsite.DB.Variable", b =>
+                {
+                    b.Navigation("Values");
+                });
+
+            modelBuilder.Entity("HatCommunityWebsite.DB.VariableValue", b =>
                 {
                     b.Navigation("RunVariables");
                 });

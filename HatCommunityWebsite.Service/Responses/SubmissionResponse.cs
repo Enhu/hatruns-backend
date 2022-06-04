@@ -5,7 +5,7 @@ namespace HatCommunityWebsite.Service.Responses
 {
     public class SubmissionResponse
     {
-        public string PlayerName { get; set; }
+        public List<string> PlayerNames { get; set; }
         public string Platform { get; set; }
         public string? Description { get; set; }
         public double Time { get; set; }
@@ -25,7 +25,7 @@ namespace HatCommunityWebsite.Service.Responses
         public bool IsObsolete { get; set; }
 
         //relationships properties
-        public List<VariablesData> Variables { get; set; }
+        public List<VariableData> Variables { get; set; }
         public GameData Game { get; set; }
         public CategoryData Category { get; set; }
         public SubCategoryData SubCategory { get; set; }

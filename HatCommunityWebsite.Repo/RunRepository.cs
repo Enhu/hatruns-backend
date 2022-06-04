@@ -27,7 +27,7 @@ namespace HatCommunityWebsite.Repo
 
         Task<List<Run>> GetUserPendingRuns(int userId);
 
-        Task<List<Run>> GetVerifiedUserRuns(int userId);
+        Task<List<Run>> GetVerifiedUserProfileRuns(string username);
 
         Task<List<Run>> GetAllLeaderboardRuns(int categoryId, int? subcategoryId = null, int? levelId = null);
 
@@ -49,8 +49,8 @@ namespace HatCommunityWebsite.Repo
                         .Include(c => c.Category)
                         .ThenInclude(g => g.Game)
                         .Include(sc => sc.SubCategory)
-                        .Include(rv => rv.RunVariables)
-                        .ThenInclude(v => v.AssociatedVariable)
+                        .Include(rv => rv.RunVariableValues)
+                        .ThenInclude(v => v.AssociatedVariableValue)
                         .FirstOrDefaultAsync(x => x.Id == id);
         }
 
@@ -87,7 +87,7 @@ namespace HatCommunityWebsite.Repo
         public async Task<Run> GetRunByIdWithRunVariables(int id)
         {
             return await _context.Runs
-                .Include(x => x.RunVariables)
+                .Include(x => x.RunVariableValues)
                 .FirstOrDefaultAsync(i => i.Id == id);
         }
 
@@ -122,6 +122,7 @@ namespace HatCommunityWebsite.Repo
         public async Task<List<Run>> GetAllLeaderboardRuns(int categoryId, int? subcategoryId = null, int? levelId = null)
         {
             return await _context.Runs
+                .Include(x => x.RunUsers)
                 .Include(x => x.Category)
                 .ThenInclude(x => x.Game)
                     .Where(x => x.CategoryId == categoryId)
@@ -131,7 +132,7 @@ namespace HatCommunityWebsite.Repo
                     .ToListAsync();
         }
 
-        public async Task<List<Run>> GetVerifiedUserRuns(int userId)
+        public async Task<List<Run>> GetVerifiedUserProfileRuns(string username)
         {
             return await _context.Runs
                 .Include(x => x.Category)
@@ -139,7 +140,7 @@ namespace HatCommunityWebsite.Repo
                 .Include(x => x.SubCategory)
                 .Include(x => x.Category)
                 .ThenInclude(x => x.Level)
-                .Where(x => x.RunUsers.First().AssociatedUser.Id == userId && x.Status == 1)
+                .Where(x => x.RunUsers.First().AssociatedUser.Username == username && x.Status == 1)
                 .OrderByDescending(x => x.Date)
                 .ToListAsync();
         }

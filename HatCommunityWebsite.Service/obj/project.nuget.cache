@@ -1,10 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "feNqhQX+pi2CPE2hUKmYAtjMqvsutEBnCzjYs2Z7D7hNz7Rv1feXMeerbcchVpYsYMowMFEMbo4sSYmKf3X0Zg==",
+  "dgSpecHash": "9mwAjMw1fvRqxGHQ2//8RqFBuugJahZVgoLB1DYclyq06bA1bfUN5M+TPxF2LHjCppVfqoDBEGwlR/R3k7LQpQ==",
   "success": true,
   "projectFilePath": "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\HatCommunityWebsite.Service\\HatCommunityWebsite.Service.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Enhu\\.nuget\\packages\\automapper\\11.0.1\\automapper.11.0.1.nupkg.sha512",
+    "C:\\Users\\Enhu\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\11.0.0\\automapper.extensions.microsoft.dependencyinjection.11.0.0.nupkg.sha512",
     "C:\\Users\\Enhu\\.nuget\\packages\\mailkit\\3.2.0\\mailkit.3.2.0.nupkg.sha512",
     "C:\\Users\\Enhu\\.nuget\\packages\\microsoft.aspnetcore.jsonpatch\\6.0.4\\microsoft.aspnetcore.jsonpatch.6.0.4.nupkg.sha512",
     "C:\\Users\\Enhu\\.nuget\\packages\\microsoft.aspnetcore.mvc.newtonsoftjson\\6.0.4\\microsoft.aspnetcore.mvc.newtonsoftjson.6.0.4.nupkg.sha512",

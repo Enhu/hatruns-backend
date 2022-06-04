@@ -41,7 +41,7 @@ namespace HatCommunityWebsite.Service
 
         public UserProfileRunsResponse GetUserProfileRuns(string username)
         {
-            var runs = _runRepo.GetVerifiedUserRuns(username).Result;
+            var runs = _runRepo.GetVerifiedUserProfileRuns(username).Result;
             var gameList = _gameRepo.GetAllGames().Result;
 
             var response = new UserProfileRunsResponse();
@@ -170,7 +170,7 @@ namespace HatCommunityWebsite.Service
                 var runData = new RunData
                 {
                     Id = run.Id,
-                    Place = GetRunPlace(run.Id, run.CategoryId, run.SubcategoryId),
+                    Place = GetRunPlace(run.Id, run.CategoryId.Value, run.SubcategoryId),
                     CategoryName = run.Category.Name,
                     SubcategoryName = run.SubCategory?.Name,
                     Date = run.Date,
@@ -192,7 +192,7 @@ namespace HatCommunityWebsite.Service
                 var runData = new RunData
                 {
                     Id = run.Id,
-                    Place = GetRunPlace(run.Id, run.CategoryId, run.SubcategoryId),
+                    Place = GetRunPlace(run.Id, run.CategoryId.Value, run.SubcategoryId),
                     CategoryName = run.Category.Name,
                     SubcategoryName = run.SubCategory?.Name,
                     Date = run.Date,

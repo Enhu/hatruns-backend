@@ -1,20 +1,11 @@
-﻿using HatCommunityWebsite.DB;
-using Microsoft.AspNetCore.Mvc;
-using System.Text;
-using System.Security.Cryptography;
-using System.Security.Claims;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using HatCommunityWebsite.DB;
-using Microsoft.EntityFrameworkCore;
-using HatCommunityWebsite.Service.Responses;
-using HatCommunityWebsite.Service;
+﻿using HatCommunityWebsite.Service;
 using HatCommunityWebsite.Service.Dtos;
+using HatCommunityWebsite.Service.Responses;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace HatCommunityWebsite.API.Controllers
 {
-
     [ApiController]
     [Route("[controller]")]
     public class AuthController : ControllerBase
@@ -24,8 +15,8 @@ namespace HatCommunityWebsite.API.Controllers
         public AuthController(IAuthService accountService)
         {
             _accountService = accountService;
+        }
 
-         }
         [AllowAnonymous]
         [HttpPost("register")]
         public IActionResult Register(UserDto request)
@@ -33,6 +24,7 @@ namespace HatCommunityWebsite.API.Controllers
             _accountService.Register(request, Request.Headers["origin"]);
             return Ok(new { message = "Registration successful, please check your email for verification instructions" });
         }
+
         [AllowAnonymous]
         [HttpPost("verify-account")]
         public IActionResult VerifyAccount(VerifyUserDto request)
@@ -40,6 +32,7 @@ namespace HatCommunityWebsite.API.Controllers
             _accountService.VerifyEmail(request.Token);
             return Ok(new { message = "Verification successful, you can now login" });
         }
+
         [AllowAnonymous]
         [HttpPost("authenticate")]
         public ActionResult<AuthenticateResponse> Authenticate(HatCommunityWebsite.Service.Dtos.LogInDto request)
@@ -58,6 +51,7 @@ namespace HatCommunityWebsite.API.Controllers
             setRefreshTokenCookie(response.RefreshToken.Token, response.RefreshToken.Expires);
             return Ok(response);
         }
+
         [AllowAnonymous]
         [HttpPost("forgot-password")]
         public IActionResult ForgotPassword(ForgotPasswordDto request)
@@ -65,6 +59,7 @@ namespace HatCommunityWebsite.API.Controllers
             _accountService.ForgotPassword(request, Request.Headers["origin"]);
             return Ok(new { message = "Please check your email for password reset instructions" });
         }
+
         [AllowAnonymous]
         [HttpPost("reset-password")]
         public IActionResult ResetPassword(ResetPasswordDto request)

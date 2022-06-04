@@ -75,19 +75,20 @@ namespace HatCommunityWebsite.DB.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Level",
+                name: "Levels",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Rules = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     GameId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Level", x => x.Id);
+                    table.PrimaryKey("PK_Levels", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Level_Games_GameId",
+                        name: "FK_Levels_Games_GameId",
                         column: x => x.GameId,
                         principalTable: "Games",
                         principalColumn: "Id");
@@ -100,8 +101,6 @@ namespace HatCommunityWebsite.DB.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Value = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsDefault = table.Column<bool>(type: "bit", nullable: false),
                     GameId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -122,7 +121,9 @@ namespace HatCommunityWebsite.DB.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Rules = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsDefault = table.Column<bool>(type: "bit", nullable: false),
                     IsConsole = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    IsCustom = table.Column<bool>(type: "bit", nullable: false),
                     GameId = table.Column<int>(type: "int", nullable: false),
                     LevelId = table.Column<int>(type: "int", nullable: true)
                 },
@@ -135,9 +136,29 @@ namespace HatCommunityWebsite.DB.Migrations
                         principalTable: "Games",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Categories_Level_LevelId",
+                        name: "FK_Categories_Levels_LevelId",
                         column: x => x.LevelId,
-                        principalTable: "Level",
+                        principalTable: "Levels",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "VariableValues",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsDefault = table.Column<bool>(type: "bit", nullable: false),
+                    VariableId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_VariableValues", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_VariableValues_Variables_VariableId",
+                        column: x => x.VariableId,
+                        principalTable: "Variables",
                         principalColumn: "Id");
                 });
 
@@ -168,11 +189,9 @@ namespace HatCommunityWebsite.DB.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PlayerName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Platform = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Time = table.Column<double>(type: "float", nullable: false),
-                    VideoLinks = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     SubmittedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SubmittedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -183,8 +202,7 @@ namespace HatCommunityWebsite.DB.Migrations
                     RejectedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RejectedReason = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsObsolete = table.Column<bool>(type: "bit", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    CategoryId = table.Column<int>(type: "int", nullable: false),
+                    CategoryId = table.Column<int>(type: "int", nullable: true),
                     SubcategoryId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -194,14 +212,35 @@ namespace HatCommunityWebsite.DB.Migrations
                         name: "FK_Runs_Categories_CategoryId",
                         column: x => x.CategoryId,
                         principalTable: "Categories",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Runs_Subcategories_SubcategoryId",
                         column: x => x.SubcategoryId,
                         principalTable: "Subcategories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RunUsers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RunId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RunUsers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RunUsers_Runs_RunId",
+                        column: x => x.RunId,
+                        principalTable: "Runs",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Runs_Users_UserId",
+                        name: "FK_RunUsers_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id");
@@ -214,7 +253,7 @@ namespace HatCommunityWebsite.DB.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     RunId = table.Column<int>(type: "int", nullable: false),
-                    VariableId = table.Column<int>(type: "int", nullable: false)
+                    VariableValueId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -223,13 +262,32 @@ namespace HatCommunityWebsite.DB.Migrations
                         name: "FK_RunVariables_Runs_RunId",
                         column: x => x.RunId,
                         principalTable: "Runs",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_RunVariables_VariableValues_VariableValueId",
+                        column: x => x.VariableValueId,
+                        principalTable: "VariableValues",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Videos",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Link = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RunId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Videos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Videos_Runs_RunId",
+                        column: x => x.RunId,
+                        principalTable: "Runs",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_RunVariables_Variables_VariableId",
-                        column: x => x.VariableId,
-                        principalTable: "Variables",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -243,8 +301,8 @@ namespace HatCommunityWebsite.DB.Migrations
                 column: "LevelId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Level_GameId",
-                table: "Level",
+                name: "IX_Levels_GameId",
+                table: "Levels",
                 column: "GameId");
 
             migrationBuilder.CreateIndex(
@@ -258,8 +316,13 @@ namespace HatCommunityWebsite.DB.Migrations
                 column: "SubcategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Runs_UserId",
-                table: "Runs",
+                name: "IX_RunUsers_RunId",
+                table: "RunUsers",
+                column: "RunId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RunUsers_UserId",
+                table: "RunUsers",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -268,9 +331,9 @@ namespace HatCommunityWebsite.DB.Migrations
                 column: "RunId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RunVariables_VariableId",
+                name: "IX_RunVariables_VariableValueId",
                 table: "RunVariables",
-                column: "VariableId");
+                column: "VariableValueId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Subcategories_CategoryId",
@@ -281,6 +344,16 @@ namespace HatCommunityWebsite.DB.Migrations
                 name: "IX_Variables_GameId",
                 table: "Variables",
                 column: "GameId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VariableValues_VariableId",
+                table: "VariableValues",
+                column: "VariableId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Videos_RunId",
+                table: "Videos",
+                column: "RunId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -289,7 +362,19 @@ namespace HatCommunityWebsite.DB.Migrations
                 name: "Platforms");
 
             migrationBuilder.DropTable(
+                name: "RunUsers");
+
+            migrationBuilder.DropTable(
                 name: "RunVariables");
+
+            migrationBuilder.DropTable(
+                name: "Videos");
+
+            migrationBuilder.DropTable(
+                name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "VariableValues");
 
             migrationBuilder.DropTable(
                 name: "Runs");
@@ -301,13 +386,10 @@ namespace HatCommunityWebsite.DB.Migrations
                 name: "Subcategories");
 
             migrationBuilder.DropTable(
-                name: "Users");
-
-            migrationBuilder.DropTable(
                 name: "Categories");
 
             migrationBuilder.DropTable(
-                name: "Level");
+                name: "Levels");
 
             migrationBuilder.DropTable(
                 name: "Games");

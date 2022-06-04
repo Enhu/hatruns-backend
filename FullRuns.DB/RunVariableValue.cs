@@ -2,7 +2,7 @@
 
 namespace HatCommunityWebsite.DB
 {
-    public class RunVariable
+    public class RunVariableValue
     {
         [Key]
         public int Id { get; set; }
@@ -10,7 +10,7 @@ namespace HatCommunityWebsite.DB
         public int RunId { get; set; }
         public Run AssociatedRun { get; set; }
 
-        public int VariableId { get; set; }
-        public Variable AssociatedVariable { get; set; }
+        public int VariableValueId { get; set; }
+        public VariableValue AssociatedVariableValue { get; set; }
     }
 }

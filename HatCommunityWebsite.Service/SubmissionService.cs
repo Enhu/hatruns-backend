@@ -7,6 +7,8 @@ using HatCommunityWebsite.Service.Responses;
 using HatCommunityWebsite.Service.Responses.Data;
 using Newtonsoft.Json;
 using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace HatCommunityWebsite.Service
 {
@@ -33,8 +35,9 @@ namespace HatCommunityWebsite.Service
         private readonly ICategoryRepository _categoryRepo;
         private readonly IGameRepository _gameRepo;
         private readonly IUserRepository _userRepo;
-        private readonly ISubCategoryRepository _subcategoryRepo;
+        private readonly ISubcategoryRepository _subcategoryRepo;
         private readonly IVariableRepository _variableRepo;
+        private readonly IVariableValueRepository _variableValueRepo;
         private readonly IRunVariableRepository _runVariableRepo;
         private readonly IMapper _mapper;
 
@@ -42,11 +45,12 @@ namespace HatCommunityWebsite.Service
             IRunRepository runRepo,
             IMapper mapper,
             ICategoryRepository categoryRepository,
-            ISubCategoryRepository subCategoryRepository,
+            ISubcategoryRepository subCategoryRepository,
             IGameRepository gameRepository,
             IUserRepository userRepository,
             IVariableRepository variableRepository,
-            IRunVariableRepository runVariableRepository)
+            IRunVariableRepository runVariableRepository,
+            IVariableValueRepository variableValueRepo)
         {
             _runRepo = runRepo;
             _categoryRepo = categoryRepository;
@@ -56,6 +60,7 @@ namespace HatCommunityWebsite.Service
             _mapper = mapper;
             _variableRepo = variableRepository;
             _runVariableRepo = runVariableRepository;
+            _variableValueRepo = variableValueRepo;
         }
 
         public void Submit(SubmissionDto request, ClaimsIdentity userIdentity)
@@ -85,7 +90,7 @@ namespace HatCommunityWebsite.Service
 
             _runRepo.SaveRun(run);
 
-            UpdatePendingRuns(userId, run.CategoryId, run.SubcategoryId);
+            UpdatePendingRuns(userId, run.CategoryId.Value, run.SubcategoryId);
         }
 
         public void RejectSubmission(RejectSubmissionDto request, ClaimsIdentity userIdentity)
@@ -111,7 +116,7 @@ namespace HatCommunityWebsite.Service
 
             _runRepo.UpdateRun(run);
 
-            UpdatePendingRuns(run.RunUsers.FirstOrDefault().AssociatedUser.Id, run.CategoryId, run.SubcategoryId);
+            UpdatePendingRuns(run.RunUsers.FirstOrDefault().AssociatedUser.Id, run.CategoryId.Value, run.SubcategoryId);
         }
 
         public void VerifySubmission(VerifySubmissionDto request, ClaimsIdentity userIdentity)
@@ -132,7 +137,7 @@ namespace HatCommunityWebsite.Service
 
             _runRepo.UpdateRun(run);
 
-            UpdatePendingRuns(run.RunUsers.FirstOrDefault().AssociatedUser.Id, run.CategoryId, run.SubcategoryId);
+            UpdatePendingRuns(run.RunUsers.FirstOrDefault().AssociatedUser.Id, run.CategoryId.Value, run.SubcategoryId);
         }
 
         public void DeleteSubmission(int runId, ClaimsIdentity userIdentity)
@@ -152,7 +157,7 @@ namespace HatCommunityWebsite.Service
 
             _runRepo.DeleteRun(run);
 
-            UpdatePendingRuns(run.RunUsers.FirstOrDefault().AssociatedUser.Id, run.CategoryId, run.SubcategoryId);
+            UpdatePendingRuns(run.RunUsers.FirstOrDefault().AssociatedUser.Id, run.CategoryId.Value, run.SubcategoryId);
         }
 
         public void UpdateSubmission(UpdateSubmissionDto request, ClaimsIdentity userIdentity)
@@ -182,23 +187,23 @@ namespace HatCommunityWebsite.Service
 
                 foreach (var item in variables) //THIS CAN BE IMPROVED
                 {
-                    var variable = _variableRepo.GetByNameAndId(item.Id, item.Name).Result;
+                    var variable = _variableValueRepo.GetValueByNameAndVaribleId(item.Id, item.Name).Result;
 
-                    var runVar = run.RunVariables.FirstOrDefault(x => x.VariableId == item.Id);
+                    var runVar = run.RunVariableValues.FirstOrDefault(x => x.VariableValueId == item.Id);
                     if (runVar != null)
                     {
-                        run.RunVariables.Remove(runVar);
+                        run.RunVariableValues.Remove(runVar);
                     }
 
                     if (variable != null)
                     {
-                        var runVariable = new RunVariable
+                        var runVariable = new RunVariableValue
                         {
                             AssociatedRun = run,
-                            AssociatedVariable = variable
+                            AssociatedVariableValue = variable
                         };
 
-                        run.RunVariables.Add(runVariable);
+                        run.RunVariableValues.Add(runVariable);
                     }
                 }
             }
@@ -218,7 +223,7 @@ namespace HatCommunityWebsite.Service
 
             _runRepo.UpdateRun(run);
 
-            UpdatePendingRuns(userId, run.CategoryId, run.SubcategoryId);
+            UpdatePendingRuns(userId, run.CategoryId.Value, run.SubcategoryId);
         }
 
         public SubmissionResponse GetSubmission(int runId)
@@ -234,7 +239,7 @@ namespace HatCommunityWebsite.Service
             return response;
         }
 
-        public void ImportSubmissions(List<ImportDto> request, ClaimsIdentity userIdentity) //not finished
+        public void ImportSubmissions(List<ImportDto> request, ClaimsIdentity userIdentity) 
         {
             var runList = new List<Run>();
 
@@ -242,7 +247,7 @@ namespace HatCommunityWebsite.Service
             {
                 var run = new Run();
 
-                var users = GetUser(importedRun.PlayerNames); //finish
+                var users = GetUser(importedRun.PlayerNames); 
 
                 foreach (var user in users)
                 {
@@ -262,7 +267,7 @@ namespace HatCommunityWebsite.Service
                 run.Date = importedRun.Date;
                 run.SubmittedBy = modUsername;
                 run.IsObsolete = importedRun.IsObsolete;
-                run.Status = (int)SubmissionStatus.Pending;
+                run.Status = importedRun.Status;
                 run.SubmittedDate = DateTime.UtcNow;
 
                 SetVideos(run, importedRun.Videos);
@@ -360,16 +365,33 @@ namespace HatCommunityWebsite.Service
 
         private void CreateUser(string username)
         {
-            var user = new User
-            {
-                Username = username
-            };
+            var user = new User();
+            user.Role = (int)UserRoles.ROLE_BASIC;
+            user.Created = DateTime.UtcNow;
+            user.Email = "userwasimported";
+            user.IsImported = true;
+
+            // hash password
+            CreatePasswordHash(Convert.ToHexString(RandomNumberGenerator.GetBytes(64)), out byte[] passwordHash, out byte[] passwordSalt);
+
+            user.PasswordHash = passwordHash;
+            user.PasswordSalt = passwordSalt;
 
             _userRepo.SaveUser(user);
         }
 
+        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
+        {
+            using (var hmac = new HMACSHA512())
+            {
+                passwordSalt = hmac.Key;
+                passwordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
+            }
+        }
+
         private void SetSubmissionData(Run run, SubmissionResponse response)
         {
+            response.PlayerNames = SetPlayerNames(run.RunUsers);
             response.Game.Name = run.Category.Game.Name;
             response.Game.Acronym = run.Category.Game.Acronym;
 
@@ -377,12 +399,24 @@ namespace HatCommunityWebsite.Service
 
             response.SubCategory.Name = run.SubCategory?.Name;
 
-            foreach (var var in run.RunVariables)
+            foreach (var var in run.RunVariableValues)
             {
-                response.Variables.Add(new VariablesData { Name = var.AssociatedVariable.Name, Value = var.AssociatedVariable.Value });
+                response.Variables.Add(new VariableData { Name = var.AssociatedVariableValue.Variable.Name, Value = var.AssociatedVariableValue.Name });
             }
 
             response.Place = GetLeaderboardPlace(run);
+        }
+
+        private List<string> SetPlayerNames(ICollection<RunUser> runUsers)
+        {
+            var usernames = new List<string>();
+
+            foreach (var runUser in runUsers)
+            {
+                usernames.Add(runUser.AssociatedUser.Username);
+            }
+
+            return usernames;
         }
 
         private void UpdatePendingRuns(int userId, int categoryId, int? subcategoryId)
@@ -419,14 +453,14 @@ namespace HatCommunityWebsite.Service
 
             if (run.Status == (int)SubmissionStatus.Verified)
             {
-                var runs = _runRepo.GetLeaderboardRuns(run.CategoryId, run.SubcategoryId).Result;
+                var runs = _runRepo.GetLeaderboardRuns(run.CategoryId.Value, run.SubcategoryId).Result;
 
                 return (runs.FindIndex(x => x.Id == run.Id) + 1).ToString();
             }
 
             if (run.Status == (int)SubmissionStatus.Pending)
             {
-                var runTimes = _runRepo.GetLeaderboardTimes(run.CategoryId, run.SubcategoryId).Result;
+                var runTimes = _runRepo.GetLeaderboardTimes(run.CategoryId.Value, run.SubcategoryId).Result;
                 runTimes.Add(run.Time);
 
                 var orderedRuns = runTimes.OrderBy(x => x).ToList();
@@ -443,13 +477,13 @@ namespace HatCommunityWebsite.Service
 
             foreach (var item in variables)
             {
-                var variable = _variableRepo.GetByNameAndId(item.Id, item.Name).Result;
+                var variable = _variableValueRepo.GetValueByNameAndVaribleId(item.Id, item.Name).Result;
 
                 if (variable == null)
                     throw new AppException("Variable not found");
 
-                var runvarRelationship = new RunVariable { AssociatedRun = run, AssociatedVariable = variable };
-                run.RunVariables.Add(runvarRelationship);
+                var runvarRelationship = new RunVariableValue { AssociatedRun = run, AssociatedVariableValue = variable };
+                run.RunVariableValues.Add(runvarRelationship);
             }
         }
 
@@ -457,7 +491,7 @@ namespace HatCommunityWebsite.Service
         {
             if (isRejection)
             {
-                var lastVerifiedRun = _runRepo.GetLastVerifiedRun(userId, run.CategoryId, run.SubcategoryId).Result;
+                var lastVerifiedRun = _runRepo.GetLastVerifiedRun(userId, run.CategoryId.Value, run.SubcategoryId).Result;
 
                 if (lastVerifiedRun != null)
                 {
@@ -467,7 +501,7 @@ namespace HatCommunityWebsite.Service
             }
             else
             {
-                var currentVerifiedRun = _runRepo.GetCurrentVerifiedRun(userId, run.CategoryId, run.SubcategoryId).Result;
+                var currentVerifiedRun = _runRepo.GetCurrentVerifiedRun(userId, run.CategoryId.Value, run.SubcategoryId).Result;
                 if (currentVerifiedRun != null)
                 {
                     if (currentVerifiedRun.Time < run.Time)

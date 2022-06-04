@@ -26,11 +26,11 @@ namespace HatCommunityWebsite.DB
         public bool IsObsolete { get; set; }
 
         //navigation properties
-        public ICollection<RunVariable> RunVariables { get; set; }
+        public ICollection<RunVariableValue>? RunVariableValues { get; set; }
         public ICollection<RunUser> RunUsers { get; set; }
 
-        public Category Category { get; set; }
-        public int CategoryId { get; set; }
+        public Category? Category { get; set; }
+        public int? CategoryId { get; set; }
         public Subcategory? SubCategory { get; set; }
         public int? SubcategoryId { get; set; }
     }

@@ -10,9 +10,11 @@ namespace HatCommunityWebsite.DB
         public DbSet<Category> Categories { get; set; }
         public DbSet<Subcategory> Subcategories { get; set; }
         public DbSet<Variable> Variables { get; set; }
+        public DbSet<VariableValue> VariableValues { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Platform> Platforms { get; set; }
-        public DbSet<RunVariable> RunVariables { get; set; }
+        public DbSet<RunVariableValue> RunVariables { get; set; }
+        public DbSet<Level> Levels { get; set; }
         public DbSet<Video> Videos { get; set; }
         public DbSet<RunUser> RunUsers { get; set; }
 
@@ -31,21 +33,21 @@ namespace HatCommunityWebsite.DB
             //many to many run and variables
 
             modelBuilder
-                .Entity<RunVariable>()
+                .Entity<RunVariableValue>()
                 .HasKey(t => t.Id);
 
             modelBuilder
-                .Entity<RunVariable>()
+                .Entity<RunVariableValue>()
                 .HasOne(r => r.AssociatedRun)
-                .WithMany(r => r.RunVariables)
+                .WithMany(r => r.RunVariableValues)
                 .HasForeignKey(rv => rv.RunId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder
-                .Entity<RunVariable>()
-                .HasOne(v => v.AssociatedVariable)
+                .Entity<RunVariableValue>()
+                .HasOne(v => v.AssociatedVariableValue)
                 .WithMany(v => v.RunVariables)
-                .HasForeignKey(rv => rv.VariableId)
+                .HasForeignKey(rv => rv.VariableValueId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             //many to many run and users
@@ -59,7 +61,7 @@ namespace HatCommunityWebsite.DB
                 .HasOne(r => r.AssociatedRun)
                 .WithMany(r => r.RunUsers)
                 .HasForeignKey(rv => rv.RunId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder
                 .Entity<RunUser>()
@@ -74,12 +76,20 @@ namespace HatCommunityWebsite.DB
                 .HasMany(r => r.Runs)
                 .WithOne(c => c.Category)
                 .HasForeignKey(c => c.CategoryId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<Category>()
                 .HasMany(r => r.Subcategories)
                 .WithOne(c => c.Category)
                 .HasForeignKey(c => c.CategoryId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            //one to many variables
+
+            modelBuilder.Entity<Variable>()
+                .HasMany(r => r.Values)
+                .WithOne(c => c.Variable)
+                .HasForeignKey(c => c.VariableId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             //one to many subcategory
@@ -88,7 +98,7 @@ namespace HatCommunityWebsite.DB
                 .HasMany(r => r.Runs)
                 .WithOne(c => c.SubCategory)
                 .HasForeignKey(c => c.SubcategoryId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.SetNull);
 
             //one to many game
 

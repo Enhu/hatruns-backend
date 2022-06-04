@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HatCommunityWebsite.Service.Responses.Data
 {
-    public class VariablesData
+    public class VariableData
     {
         public string Name { get; set; }
         public string Value { get; set; }
@@ -31,7 +31,7 @@ namespace HatCommunityWebsite.Service.Responses.Data
     public class RunData
     {
         public int Id { get; set; }
-        public string PlayerName { set; get; } = string.Empty;
+        public List<string>? PlayerNames { set; get; } = null;
         public string Place { get; set; }
         public string CategoryName { get; set; }
         public string SubcategoryName { get; set; } = string.Empty;

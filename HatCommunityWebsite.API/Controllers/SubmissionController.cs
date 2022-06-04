@@ -90,7 +90,11 @@ namespace HatCommunityWebsite.API.Controllers
         [HttpPost("import")]
         public IActionResult ImportSubmissions(List<ImportDto> request)
         {
-            _submissionService.ImportSubmissions(request);
+            var userIdentity = HttpContext.User.Identity as ClaimsIdentity;
+            if (userIdentity == null)
+                return Unauthorized("Could not recognize user identity");
+
+            _submissionService.ImportSubmissions(request, userIdentity);
             return Ok(new { message = "Runs successfully imported. Users created accordingly" });
         }
     }

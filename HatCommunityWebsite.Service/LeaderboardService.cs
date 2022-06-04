@@ -32,12 +32,12 @@ namespace HatCommunityWebsite.Service
                 var runData = new RunData
                 {
                     Id = run.Id,
-                    PlayerName = run.PlayerName,
+                    PlayerNames = SetPlayerNames(run.RunUsers),
                     CategoryName = run.Category.Name,
                     Date = run.Date,
                     Time = run.Time,
                     IsObsolete = run.IsObsolete,
-                    Place = GetRunPlace(run, runs)
+                    Place = SetRunPlace(run, runs)
                 };
 
                 response.Runs.Add(runData);
@@ -48,10 +48,22 @@ namespace HatCommunityWebsite.Service
             return response;
         }
 
-        private string GetRunPlace(Run run, List<Run> runs)
+        private List<string> SetPlayerNames(ICollection<RunUser> runUsers)
+        {
+            var usernames = new List<string>();
+
+            foreach (var runUser in runUsers)
+            {
+                usernames.Add(runUser.AssociatedUser.Username);
+            }
+
+            return usernames;
+        }
+
+        private string SetRunPlace(Run run, List<Run> runs)
         {
             if (run.IsObsolete)
-                return string.Empty;
+                return "-";
 
             var index = runs.IndexOf(run);
 
