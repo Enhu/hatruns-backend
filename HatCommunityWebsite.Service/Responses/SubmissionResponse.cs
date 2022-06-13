@@ -9,7 +9,7 @@ namespace HatCommunityWebsite.Service.Responses
         public string Platform { get; set; }
         public string? Description { get; set; }
         public double Time { get; set; }
-        public string VideoLinks { get; set; }
+        public List<string> Videos { get; set; }
         public DateTime Date { get; set; }
         public string SubmittedBy { get; set; }
         public DateTime SubmittedDate { get; set; }
@@ -17,6 +17,7 @@ namespace HatCommunityWebsite.Service.Responses
 
         //verification status
         public int Status { get; set; }
+        public string StatusLabel { get; set; }
         public string? VerifiedBy { get; set; }
         public DateTime? VerifiedDate { get; set; }
         public DateTime? RejectedDate { get; set; }
@@ -28,6 +29,6 @@ namespace HatCommunityWebsite.Service.Responses
         public List<VariableData> Variables { get; set; }
         public GameData Game { get; set; }
         public CategoryData Category { get; set; }
-        public SubCategoryData SubCategory { get; set; }
+        public SubcategoryData Subcategory { get; set; }
     }
 }

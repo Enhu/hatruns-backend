@@ -5,7 +5,7 @@ namespace HatCommunityWebsite.Repo
 {
     public interface IRunRepository
     {
-        Task<Run> GetRunByIdWithAllRelationships(int id);
+        Task<Run> GetRunByIdIncludeAllData(int id);
 
         Task<Run> GetRunById(int id);
 
@@ -15,11 +15,13 @@ namespace HatCommunityWebsite.Repo
 
         Task UpdateRun(Run run);
 
+        Task UpdateRuns(List<Run> runs);
+
         Task<Run> GetCurrentVerifiedRun(int userId, int categoryId, int? subCategoryId = null);
 
         Task<Run> GetLastVerifiedRun(int userId, int categoryId, int? subCategoryId = null);
 
-        Task<Run> GetRunByIdWithRunVariables(int id);
+        Task<Run> GetRunByIdWithRunVariablesAndVideos(int id);
 
         Task<List<double>> GetLeaderboardTimes(int categoryId, int? subcategoryId = null);
 
@@ -43,14 +45,18 @@ namespace HatCommunityWebsite.Repo
             _context = context;
         }
 
-        public async Task<Run> GetRunByIdWithAllRelationships(int id)
+        public async Task<Run> GetRunByIdIncludeAllData(int id)
         {
             return await _context.Runs
                         .Include(c => c.Category)
                         .ThenInclude(g => g.Game)
                         .Include(sc => sc.SubCategory)
+                        .Include(v => v.Videos)
+                        .Include(ru => ru.RunUsers)
+                        .ThenInclude(u => u.AssociatedUser)
                         .Include(rv => rv.RunVariableValues)
                         .ThenInclude(v => v.AssociatedVariableValue)
+                        .ThenInclude(x => x.Variable)
                         .FirstOrDefaultAsync(x => x.Id == id);
         }
 
@@ -84,10 +90,12 @@ namespace HatCommunityWebsite.Repo
                 .ToListAsync();
         }
 
-        public async Task<Run> GetRunByIdWithRunVariables(int id)
+        public async Task<Run> GetRunByIdWithRunVariablesAndVideos(int id)
         {
             return await _context.Runs
+                .Include(v => v.Videos)
                 .Include(x => x.RunVariableValues)
+                .ThenInclude(x => x.AssociatedVariableValue)
                 .FirstOrDefaultAsync(i => i.Id == id);
         }
 
@@ -123,6 +131,9 @@ namespace HatCommunityWebsite.Repo
         {
             return await _context.Runs
                 .Include(x => x.RunUsers)
+                .ThenInclude(x => x.AssociatedUser)
+                .Include(x => x.RunVariableValues)
+                .ThenInclude(x => x.AssociatedVariableValue)
                 .Include(x => x.Category)
                 .ThenInclude(x => x.Game)
                     .Where(x => x.CategoryId == categoryId)
@@ -154,9 +165,7 @@ namespace HatCommunityWebsite.Repo
         public async Task SaveRuns(List<Run> runs)
         {
             foreach (var run in runs)
-            {
                 _context.Runs.Add(run);
-            }
 
             await _context.SaveChangesAsync();
         }
@@ -164,6 +173,14 @@ namespace HatCommunityWebsite.Repo
         public async Task UpdateRun(Run run)
         {
             _context.Runs.Update(run);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateRuns(List<Run> runs)
+        {
+            foreach (var run in runs)
+                _context.Runs.Update(run);
+
             await _context.SaveChangesAsync();
         }
 

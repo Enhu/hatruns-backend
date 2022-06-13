@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HatCommunityWebsite.DB
 {
@@ -8,8 +9,8 @@ namespace HatCommunityWebsite.DB
         [Key]
         public int Id { get; set; }
         public string Name { get; set; }
-        public bool IsDefault { get; set; }
-        public string Rules { get; set; }
+        public int Index { get; set; }
+        public string? Rules { get; set; }
 
         //navigation properties
         public ICollection<Run> Runs { get; set; }

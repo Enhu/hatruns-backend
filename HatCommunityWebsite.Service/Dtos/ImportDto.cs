@@ -1,4 +1,6 @@
-﻿namespace HatCommunityWebsite.Service.Dtos
+﻿using HatCommunityWebsite.Service.Responses.Data;
+
+namespace HatCommunityWebsite.Service.Dtos
 {
     public class ImportDto
     {
@@ -10,7 +12,7 @@
         public DateTime Date { get; set; }
         public bool IsObsolete { get; set; }
         public string SubmittedBy { get; set; }
-        public string? Variables { get; set; }
+        public List<VariableData>? Variables { get; set; }
         public int Status { get; set; }
         public int GameId { get; set; }
         public int CategoryId { get; set; }

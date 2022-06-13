@@ -19,53 +19,70 @@ namespace HatCommunityWebsite.API.Controllers
 
         [AllowAnonymous]
         [HttpPost("register")]
-        public IActionResult Register(UserDto request)
+        public async Task<IActionResult> Register(UserDto request)
         {
-            _accountService.Register(request, Request.Headers["origin"]);
+            await _accountService.Register(request, Request.Headers["origin"]);
             return Ok(new { message = "Registration successful, please check your email for verification instructions" });
         }
 
         [AllowAnonymous]
         [HttpPost("verify-account")]
-        public IActionResult VerifyAccount(VerifyUserDto request)
+        public async Task<IActionResult> VerifyAccount(VerifyUserDto request)
         {
-            _accountService.VerifyEmail(request.Token);
+            await _accountService.VerifyEmail(request.Token);
             return Ok(new { message = "Verification successful, you can now login" });
         }
 
         [AllowAnonymous]
         [HttpPost("authenticate")]
-        public ActionResult<AuthenticateResponse> Authenticate(HatCommunityWebsite.Service.Dtos.LogInDto request)
+        public async Task<ActionResult<AuthenticateResponse>> Authenticate(LogInDto request)
         {
-            var response = _accountService.Authenticate(request, ipAddress());
-            setRefreshTokenCookie(response.RefreshToken.Token, response.RefreshToken.Expires);
-            return Ok(response);
-        }
-
-        [Authorize]
-        [HttpPost("refresh-token")]
-        public ActionResult<AuthenticateResponse> RefreshToken()
-        {
-            var refreshToken = Request.Cookies["refreshToken"];
-            var response = _accountService.RefreshToken(refreshToken, ipAddress());
+            var response = await _accountService.Authenticate(request, ipAddress());
             setRefreshTokenCookie(response.RefreshToken.Token, response.RefreshToken.Expires);
             return Ok(response);
         }
 
         [AllowAnonymous]
-        [HttpPost("forgot-password")]
-        public IActionResult ForgotPassword(ForgotPasswordDto request)
+        [HttpPost("refresh-token")]
+        public async Task<ActionResult<AuthenticateResponse>> RefreshToken()
         {
-            _accountService.ForgotPassword(request, Request.Headers["origin"]);
+            var refreshToken = Request.Cookies["refreshToken"];
+            var response = await _accountService.RefreshToken(refreshToken, ipAddress());
+            setRefreshTokenCookie(response.RefreshToken.Token, response.RefreshToken.Expires);
+            return Ok(response);
+        }
+
+        [AllowAnonymous]
+        [HttpPost("logout")]
+        public async Task<ActionResult<AuthenticateResponse>> LogOut()
+        {
+            var refreshToken = Request.Cookies["refreshToken"];
+            await _accountService.Logout(refreshToken);
+            return Ok(new { message = "User logged out" });
+        }
+
+        [AllowAnonymous]
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordDto request)
+        {
+            await _accountService.ForgotPassword(request, Request.Headers["origin"]);
             return Ok(new { message = "Please check your email for password reset instructions" });
         }
 
         [AllowAnonymous]
         [HttpPost("reset-password")]
-        public IActionResult ResetPassword(ResetPasswordDto request)
+        public async Task<IActionResult> ResetPassword(ResetPasswordDto request)
         {
-            _accountService.ResetPassword(request);
+            await _accountService.ResetPassword(request);
             return Ok(new { message = "Password reset successful, you can now login" });
+        }
+
+        [AllowAnonymous]
+        [HttpPost("validate-reset-password")]
+        public async Task<IActionResult> ValidateResetPassword(ValidateResetPasswordDto request)
+        {
+            await _accountService.ValidateResetPassword(request);
+            return Ok(new { message = "Reset password token valid" });
         }
 
         private void setRefreshTokenCookie(string token, DateTime expires)

@@ -1,18 +1,20 @@
 ﻿using HatCommunityWebsite.DB;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HatCommunityWebsite.Repo
 {
     public interface ISubcategoryRepository
     {
         Task<Subcategory> GetSubcategoryById(int id);
+
         Task SaveSubcategory(Subcategory subcategory);
+
         Task UpdateSubcategory(Subcategory subcategory);
+
+        Task SaveSubcategories(List<Subcategory> subcategories);
+
+        Task UpdateSubcategories(List<Subcategory> subcategories);
     }
+
     public class SubcategoryRepository : ISubcategoryRepository
     {
         private readonly AppDbContext _context;
@@ -26,6 +28,7 @@ namespace HatCommunityWebsite.Repo
         {
             return await _context.Subcategories.FindAsync(id);
         }
+
         public async Task SaveSubcategory(Subcategory subcategory)
         {
             _context.Subcategories.Add(subcategory);
@@ -35,6 +38,22 @@ namespace HatCommunityWebsite.Repo
         public async Task UpdateSubcategory(Subcategory subcategory)
         {
             _context.Subcategories.Update(subcategory);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task SaveSubcategories(List<Subcategory> subcategories)
+        {
+            foreach (var subcategory in subcategories)
+                _context.Subcategories.Add(subcategory);
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateSubcategories(List<Subcategory> subcategories)
+        {
+            foreach (var subcategory in subcategories)
+                _context.Subcategories.Update(subcategory);
+
             await _context.SaveChangesAsync();
         }
     }

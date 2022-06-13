@@ -33,15 +33,15 @@ namespace HatCommunityWebsite.DB.Migrations
                     b.Property<int>("GameId")
                         .HasColumnType("int");
 
+                    b.Property<int>("Index")
+                        .HasColumnType("int");
+
                     b.Property<bool>("IsConsole")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
 
                     b.Property<bool>("IsCustom")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDefault")
                         .HasColumnType("bit");
 
                     b.Property<int?>("LevelId")
@@ -52,7 +52,6 @@ namespace HatCommunityWebsite.DB.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Rules")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -256,15 +255,14 @@ namespace HatCommunityWebsite.DB.Migrations
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsDefault")
-                        .HasColumnType("bit");
+                    b.Property<int>("Index")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Rules")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -326,6 +324,9 @@ namespace HatCommunityWebsite.DB.Migrations
 
                     b.Property<DateTime?>("RefreshTokenExpires")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("RememberLogIn")
+                        .HasColumnType("bit");
 
                     b.Property<string>("ResetPasswordToken")
                         .HasColumnType("nvarchar(max)");

@@ -5,7 +5,6 @@ using HatCommunityWebsite.Service.Dtos;
 using HatCommunityWebsite.Service.Helpers;
 using HatCommunityWebsite.Service.Responses;
 using HatCommunityWebsite.Service.Responses.Data;
-using Newtonsoft.Json;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -14,19 +13,19 @@ namespace HatCommunityWebsite.Service
 {
     public interface ISubmissionService
     {
-        void Submit(SubmissionDto request, ClaimsIdentity userIdentity);
+        Task Submit(SubmissionDto request, ClaimsIdentity userIdentity);
 
-        void RejectSubmission(RejectSubmissionDto request, ClaimsIdentity userIdentity);
+        Task RejectSubmission(RejectSubmissionDto request, ClaimsIdentity userIdentity);
 
-        void VerifySubmission(VerifySubmissionDto request, ClaimsIdentity userIdentity);
+        Task VerifySubmission(VerifySubmissionDto request, ClaimsIdentity userIdentity);
 
-        void DeleteSubmission(int runId, ClaimsIdentity userIdentity);
+        Task DeleteSubmission(int runId, ClaimsIdentity userIdentity);
 
-        void UpdateSubmission(UpdateSubmissionDto request, ClaimsIdentity userIdentity);
+        Task UpdateSubmission(SubmissionDto request, ClaimsIdentity userIdentity);
 
-        SubmissionResponse GetSubmission(int runId);
+        Task<SubmissionResponse> GetSubmission(int runId);
 
-        void ImportSubmissions(List<ImportDto> request, ClaimsIdentity userIdentity);
+        Task ImportSubmissions(List<ImportDto> request, ClaimsIdentity userIdentity);
     }
 
     public class SubmissionService : ISubmissionService
@@ -63,20 +62,29 @@ namespace HatCommunityWebsite.Service
             _variableValueRepo = variableValueRepo;
         }
 
-        public void Submit(SubmissionDto request, ClaimsIdentity userIdentity)
+        public async Task Submit(SubmissionDto request, ClaimsIdentity userIdentity)
         {
-            var run = _mapper.Map<Run>(request);
+            var run = new Run
+            {
+                Date = request.Date,
+                Description = request.Description,
+                Platform = request.Platform,
+                Time = request.Time.Value,
+                Videos = new List<Video>(),
+                RunVariableValues = new List<RunVariableValue>(),
+                RunUsers = new List<RunUser>()
+            };
 
             var username = userIdentity.FindFirst(ClaimTypes.Name).Value;
             var userId = int.Parse(userIdentity.FindFirst("UserId").Value);
             var isAdmin = userIdentity.FindFirst(ClaimTypes.Role).Value == nameof(UserRoles.ROLE_ADMIN) ? true : false;
 
-            SetUsers(run, userId, request.UserIds);
+            await SetUsers(run, userId, request.ExtraUserIds);
+            await SetCategories(request.CategoryId.Value, request.SubcategoryId, run);
             SetVideos(run, request.Videos);
-            SetCategories(request.CategoryId, request.SubcategoryId, run);
 
-            if (!string.IsNullOrEmpty(request.Variables))
-                SetRunVariables(request.Variables, run);
+            if (request.Variables != null)
+                await SetRunVariables(request.Variables, run);
 
             run.Status = (int)SubmissionStatus.Pending;
             run.SubmittedDate = DateTime.UtcNow;
@@ -84,18 +92,20 @@ namespace HatCommunityWebsite.Service
 
             if (request.AutoVerify && isAdmin)
             {
-                UpdateCurrentVerifiedRun(false, run, userId);
+                await UpdateCurrentVerifiedRun(false, run, userId);
                 run.Status = (int)SubmissionStatus.Verified;
+                run.VerifiedDate = DateTime.UtcNow;
+                run.VerifiedBy = username;
             }
 
-            _runRepo.SaveRun(run);
+            await _runRepo.SaveRun(run);
 
-            UpdatePendingRuns(userId, run.CategoryId.Value, run.SubcategoryId);
+            await UpdatePendingRuns(userId, run.CategoryId.Value, run.SubcategoryId);
         }
 
-        public void RejectSubmission(RejectSubmissionDto request, ClaimsIdentity userIdentity)
+        public async Task RejectSubmission(RejectSubmissionDto request, ClaimsIdentity userIdentity)
         {
-            var run = _runRepo.GetRunById(request.RunId).Result;
+            var run = await _runRepo.GetRunById(request.RunId);
 
             if (run == null)
                 throw new AppException("Run not found");
@@ -112,16 +122,16 @@ namespace HatCommunityWebsite.Service
             run.VerifiedDate = null;
 
             //make last obsolete run visible
-            UpdateCurrentVerifiedRun(true, run, run.RunUsers.FirstOrDefault().AssociatedUser.Id);
+            await UpdateCurrentVerifiedRun(true, run, run.RunUsers.FirstOrDefault().UserId);
 
-            _runRepo.UpdateRun(run);
+            await _runRepo.UpdateRun(run);
 
-            UpdatePendingRuns(run.RunUsers.FirstOrDefault().AssociatedUser.Id, run.CategoryId.Value, run.SubcategoryId);
+            await UpdatePendingRuns(run.RunUsers.FirstOrDefault().UserId, run.CategoryId.Value, run.SubcategoryId);
         }
 
-        public void VerifySubmission(VerifySubmissionDto request, ClaimsIdentity userIdentity)
+        public async Task VerifySubmission(VerifySubmissionDto request, ClaimsIdentity userIdentity)
         {
-            var run = _runRepo.GetRunById(request.RunId).Result;
+            var run = await _runRepo.GetRunById(request.RunId);
 
             if (run == null)
                 throw new AppException("Run not found");
@@ -133,16 +143,16 @@ namespace HatCommunityWebsite.Service
             run.VerifiedDate = DateTime.UtcNow;
 
             //makes current board run obsolete
-            UpdateCurrentVerifiedRun(false, run, run.RunUsers.FirstOrDefault().AssociatedUser.Id);
+            await UpdateCurrentVerifiedRun(false, run, run.RunUsers.FirstOrDefault().UserId);
 
-            _runRepo.UpdateRun(run);
+            await _runRepo.UpdateRun(run);
 
-            UpdatePendingRuns(run.RunUsers.FirstOrDefault().AssociatedUser.Id, run.CategoryId.Value, run.SubcategoryId);
+            await UpdatePendingRuns(run.RunUsers.FirstOrDefault().UserId, run.CategoryId.Value, run.SubcategoryId);
         }
 
-        public void DeleteSubmission(int runId, ClaimsIdentity userIdentity)
+        public async Task DeleteSubmission(int runId, ClaimsIdentity userIdentity)
         {
-            var run = _runRepo.GetRunById(runId).Result;
+            var run = await _runRepo.GetRunById(runId);
 
             if (run == null)
                 throw new AppException("Run not found");
@@ -155,14 +165,17 @@ namespace HatCommunityWebsite.Service
             if (run.Status != (int)SubmissionStatus.Pending)
                 throw new AppException("Only pending submissions can be deleted");
 
-            _runRepo.DeleteRun(run);
+            await _runRepo.DeleteRun(run);
 
-            UpdatePendingRuns(run.RunUsers.FirstOrDefault().AssociatedUser.Id, run.CategoryId.Value, run.SubcategoryId);
+            await UpdatePendingRuns(run.RunUsers.FirstOrDefault().UserId, run.CategoryId.Value, run.SubcategoryId);
         }
 
-        public void UpdateSubmission(UpdateSubmissionDto request, ClaimsIdentity userIdentity)
+        public async Task UpdateSubmission(SubmissionDto request, ClaimsIdentity userIdentity)
         {
-            var run = _runRepo.GetRunByIdWithRunVariables(request.RunId).Result;
+            if (request.RunId == null)
+                throw new AppException("Run id can't be null when updating");
+
+            var run = await _runRepo.GetRunByIdWithRunVariablesAndVideos(request.RunId.Value);
 
             if (run == null)
                 throw new AppException("Run not found");
@@ -171,83 +184,88 @@ namespace HatCommunityWebsite.Service
             var userId = int.Parse(userIdentity.FindFirst("UserId").Value);
             var isAdmin = userIdentity.FindFirst(ClaimTypes.Role).Value == nameof(UserRoles.ROLE_ADMIN) ? true : false;
 
+            //only submission user or an admin can update the run
             if (run.SubmittedBy != username || !isAdmin)
                 throw new AppException("Action unauthorized");
 
-            if (request.SubcategoryId != run.SubcategoryId && request.SubcategoryId.HasValue)
-                run.SubCategory = _subcategoryRepo.GetSubcategoryById((int)request.SubcategoryId).Result;
+            if (request.SubcategoryId != null && request.SubcategoryId != run.SubcategoryId)
+                run.SubCategory = await _subcategoryRepo.GetSubcategoryById(request.SubcategoryId.Value);
 
-            run = _mapper.Map<Run>(request);
+            run.Date = request.Date;
+            run.Time = request.Time.Value;
+            run.Platform = request.Platform;
+            run.Description = request.Description;
 
-            run.Status = (int)SubmissionStatus.Pending;
+            SetVideos(run, request.Videos);
 
-            if (request.Variables != null) //makes this spaghetti better
+            if (request.Variables != null)
+                await UpdateRunVariable(request.Variables, run);
+
+            //set run status to none
+
+            if (run.Status != (int)SubmissionStatus.Pending)
             {
-                var variables = JsonConvert.DeserializeObject<List<Variable>>(request.Variables);
-
-                foreach (var item in variables) //THIS CAN BE IMPROVED
-                {
-                    var variable = _variableValueRepo.GetValueByNameAndVaribleId(item.Id, item.Name).Result;
-
-                    var runVar = run.RunVariableValues.FirstOrDefault(x => x.VariableValueId == item.Id);
-                    if (runVar != null)
-                    {
-                        run.RunVariableValues.Remove(runVar);
-                    }
-
-                    if (variable != null)
-                    {
-                        var runVariable = new RunVariableValue
-                        {
-                            AssociatedRun = run,
-                            AssociatedVariableValue = variable
-                        };
-
-                        run.RunVariableValues.Add(runVariable);
-                    }
-                }
+                run.VerifiedBy = null;
+                run.VerifiedDate = null;
+                run.RejectedBy = null;
+                run.RejectedDate = null;
+                run.RejectedReason = null;
             }
 
+            //autoverification (admin only)
             if (request.AutoVerify && isAdmin)
             {
-                run.Status = (int)SubmissionStatus.Verified;
+                if (run.Status == (int)SubmissionStatus.Verified) //if the run is verified just add verified name and date
+                {
+                    run.VerifiedDate = DateTime.UtcNow;
+                    run.VerifiedBy = username;
+                }
+                else
+                {
+                    run.Status = (int)SubmissionStatus.Verified; //otherwise update the current user run on board
+                    run.VerifiedDate = DateTime.UtcNow;
+                    run.VerifiedBy = username;
+                    await UpdateCurrentVerifiedRun(false, run, userId);
+                }
             }
             else
             {
-                if (run.Status == (int)SubmissionStatus.Verified)
+                if (run.Status != (int)SubmissionStatus.Pending) //set the status to pending and update the current user run on board
                 {
-                    UpdateCurrentVerifiedRun(true, run, userId);
+                    await UpdateCurrentVerifiedRun(true, run, userId);
                     run.Status = (int)SubmissionStatus.Pending;
                 }
             }
 
-            _runRepo.UpdateRun(run);
+            await _runRepo.UpdateRun(run);
 
-            UpdatePendingRuns(userId, run.CategoryId.Value, run.SubcategoryId);
+            //update all user pending runs
+            await UpdatePendingRuns(userId, run.CategoryId.Value, run.SubcategoryId);
         }
 
-        public SubmissionResponse GetSubmission(int runId)
+        public async Task<SubmissionResponse> GetSubmission(int runId)
         {
-            var run = _runRepo.GetRunByIdWithAllRelationships(runId).Result;
+            var run = await _runRepo.GetRunByIdIncludeAllData(runId);
 
             if (run == null)
-                throw new AppException("Run not found");
+                throw new AppException(string.Format("Run not found. Run id: {0}", runId));
 
-            var response = _mapper.Map<SubmissionResponse>(run);
-            SetSubmissionData(run, response);
+            var response = await SetSubmissionData(run);
 
             return response;
         }
 
-        public void ImportSubmissions(List<ImportDto> request, ClaimsIdentity userIdentity) 
+        public async Task ImportSubmissions(List<ImportDto> request, ClaimsIdentity userIdentity)
         {
             var runList = new List<Run>();
 
             foreach (var importedRun in request)
             {
                 var run = new Run();
+                run.RunUsers = new List<RunUser>();
+                run.RunVariableValues = new List<RunVariableValue>();
 
-                var users = GetUser(importedRun.PlayerNames); 
+                var users = await GetUser(importedRun.PlayerNames);
 
                 foreach (var user in users)
                 {
@@ -271,21 +289,21 @@ namespace HatCommunityWebsite.Service
                 run.SubmittedDate = DateTime.UtcNow;
 
                 SetVideos(run, importedRun.Videos);
-                SetCategories(importedRun.CategoryId, importedRun.SubcategoryId, run);
+                await SetCategories(importedRun.CategoryId, importedRun.SubcategoryId, run);
 
                 if (importedRun.Variables != null)
-                    SetRunVariables(importedRun.Variables, run);
+                    await SetRunVariables(importedRun.Variables, run);
 
                 runList.Add(run);
             }
 
-            _runRepo.SaveRuns(runList);
+            await _runRepo.SaveRuns(runList);
         }
 
         //helper methods
-        private void SetCategories(int categoryId, int? subCategoryId, Run run)
+        private async Task SetCategories(int categoryId, int? subCategoryId, Run run)
         {
-            var category = _categoryRepo.GetCategoryById(categoryId).Result;
+            var category = await _categoryRepo.GetCategoryByIdIncludeSubcategories(categoryId);
             Subcategory? subcategory = null;
 
             if (category == null)
@@ -304,17 +322,17 @@ namespace HatCommunityWebsite.Service
             run.SubCategory = subcategory;
         }
 
-        private void SetVideos(Run run, List<string> videos)
+        private void SetVideos(Run run, List<string> videosRequest)
         {
-            foreach (var video in videos)
-            {
+            run.Videos.Clear();
+
+            foreach (var video in videosRequest)
                 run.Videos.Add(new Video { Link = video, Run = run });
-            }
         }
 
-        private void SetUsers(Run run, int userId, List<int>? userIds)
+        private async Task SetUsers(Run run, int userId, List<int>? userIds)
         {
-            var submissionUser = _userRepo.GetUserById(userId).Result;
+            var submissionUser = await _userRepo.GetUserById(userId);
 
             run.RunUsers.Add(new RunUser
             {
@@ -326,7 +344,7 @@ namespace HatCommunityWebsite.Service
             {
                 foreach (var id in userIds)
                 {
-                    var user = _userRepo.GetUserById(id).Result;
+                    var user = await _userRepo.GetUserById(id);
 
                     var runUser = new RunUser
                     {
@@ -339,13 +357,13 @@ namespace HatCommunityWebsite.Service
             }
         }
 
-        private List<User> GetUser(List<string> usernames)
+        private async Task<List<User>> GetUser(List<string> usernames)
         {
             var users = new List<User>();
 
             foreach (var username in usernames)
             {
-                var user = _userRepo.GetUserByUsername(username).Result;
+                var user = await _userRepo.GetUserByUsername(username);
 
                 if (user != null) //return the user if it exists
                 {
@@ -355,7 +373,7 @@ namespace HatCommunityWebsite.Service
 
                 CreateUser(username);
 
-                var newUser = _userRepo.GetUserByUsername(username).Result;
+                var newUser = await _userRepo.GetUserByUsername(username);
 
                 users.Add(newUser);
             }
@@ -389,46 +407,82 @@ namespace HatCommunityWebsite.Service
             }
         }
 
-        private void SetSubmissionData(Run run, SubmissionResponse response)
+        private async Task<SubmissionResponse> SetSubmissionData(Run run)
         {
-            response.PlayerNames = SetPlayerNames(run.RunUsers);
+            var response = new SubmissionResponse();
+
+            response.PlayerNames = GetPlayerNames(run.RunUsers);
+            response.Platform = run.Platform;
+            response.Description = run.Description;
+            response.Time = run.Time;
+            response.Videos = GetRunVideos(run.Videos);
+            response.Date = run.Date;
+            response.SubmittedBy = run.SubmittedBy;
+            response.SubmittedDate = run.SubmittedDate;
+            response.Place = await GetLeaderboardPlace(run);
+
+            response.Status = run.Status;
+            response.StatusLabel = Enum.GetName(typeof(SubmissionStatus), run.Status);
+            response.VerifiedBy = run.VerifiedBy;
+            response.VerifiedDate = run.VerifiedDate;
+            response.RejectedBy = run.RejectedBy;
+            response.RejectedDate = run.RejectedDate;
+            response.RejectedReason = run.RejectedReason;
+            response.IsObsolete = run.IsObsolete;
+
+            response.Game = new GameData();
+            response.Game.Id = run.Category.Game.Id;
             response.Game.Name = run.Category.Game.Name;
             response.Game.Acronym = run.Category.Game.Acronym;
 
+            response.Category = new CategoryData();
+            response.Category.Id = run.Category.Id;
             response.Category.Name = run.Category.Name;
 
-            response.SubCategory.Name = run.SubCategory?.Name;
+            response.Subcategory = new SubcategoryData();
+            response.Subcategory.Name = run.SubCategory?.Name;
+            response.Subcategory.Id = run.SubCategory?.Id;
+
+            response.Variables = new List<VariableData>();
 
             foreach (var var in run.RunVariableValues)
             {
-                response.Variables.Add(new VariableData { Name = var.AssociatedVariableValue.Variable.Name, Value = var.AssociatedVariableValue.Name });
+                var variable = new VariableData
+                {
+                    VariableId = var.AssociatedVariableValue.VariableId,
+                    VariableName = var.AssociatedVariableValue.Variable.Name,
+                    Value = var.AssociatedVariableValue.Name,
+                    ValueId = var.VariableValueId
+                };
+                response.Variables.Add(variable);
             }
 
-            response.Place = GetLeaderboardPlace(run);
+            return response;
         }
 
-        private List<string> SetPlayerNames(ICollection<RunUser> runUsers)
+        private List<string> GetRunVideos(List<Video> videos)
         {
-            var usernames = new List<string>();
-
-            foreach (var runUser in runUsers)
-            {
-                usernames.Add(runUser.AssociatedUser.Username);
-            }
-
-            return usernames;
+            return videos.Select(x => x.Link).ToList();
         }
 
-        private void UpdatePendingRuns(int userId, int categoryId, int? subcategoryId)
+        private List<string> GetPlayerNames(ICollection<RunUser> runUsers)
+        {
+            return runUsers.Select(x => x.AssociatedUser.Username).ToList();
+        }
+
+        private async Task UpdatePendingRuns(int userId, int categoryId, int? subcategoryId)
         {
             //find user pending runs
-            var pendingRuns = _runRepo.GetUserPendingRuns(userId).Result;
+            var pendingRuns = await _runRepo.GetUserPendingRuns(userId);
 
             if (pendingRuns == null)
                 return;
 
             //find current verified run for the user
-            var currentVerifiedRun = _runRepo.GetCurrentVerifiedRun(userId, categoryId, subcategoryId).Result;
+            var currentVerifiedRun = await _runRepo.GetCurrentVerifiedRun(userId, categoryId, subcategoryId);
+
+            if (currentVerifiedRun == null)
+                return;
 
             //update obsoletion accordingly
             foreach (var pendingRun in pendingRuns)
@@ -436,16 +490,16 @@ namespace HatCommunityWebsite.Service
                 if (pendingRun.Time < currentVerifiedRun.Time)
                 {
                     pendingRun.IsObsolete = false;
-                    _runRepo.UpdateRun(pendingRun);
+                    await _runRepo.UpdateRun(pendingRun);
                     continue;
                 }
 
                 pendingRun.IsObsolete = true;
-                _runRepo.UpdateRun(pendingRun);
+                await _runRepo.UpdateRun(pendingRun);
             }
         }
 
-        private string GetLeaderboardPlace(Run run)
+        private async Task<string> GetLeaderboardPlace(Run run)
         {
             if (run.Status == (int)SubmissionStatus.Rejected) return string.Empty;
 
@@ -453,14 +507,14 @@ namespace HatCommunityWebsite.Service
 
             if (run.Status == (int)SubmissionStatus.Verified)
             {
-                var runs = _runRepo.GetLeaderboardRuns(run.CategoryId.Value, run.SubcategoryId).Result;
+                var runs = await _runRepo.GetLeaderboardRuns(run.CategoryId.Value, run.SubcategoryId);
 
                 return (runs.FindIndex(x => x.Id == run.Id) + 1).ToString();
             }
 
             if (run.Status == (int)SubmissionStatus.Pending)
             {
-                var runTimes = _runRepo.GetLeaderboardTimes(run.CategoryId.Value, run.SubcategoryId).Result;
+                var runTimes = await _runRepo.GetLeaderboardTimes(run.CategoryId.Value, run.SubcategoryId);
                 runTimes.Add(run.Time);
 
                 var orderedRuns = runTimes.OrderBy(x => x).ToList();
@@ -471,37 +525,52 @@ namespace HatCommunityWebsite.Service
             return string.Empty;
         }
 
-        private void SetRunVariables(string request, Run run)
+        private async Task SetRunVariables(List<VariableData> request, Run run)
         {
-            var variables = JsonConvert.DeserializeObject<List<Variable>>(request);
-
-            foreach (var item in variables)
+            foreach (var item in request)
             {
-                var variable = _variableValueRepo.GetValueByNameAndVaribleId(item.Id, item.Name).Result;
+                var value = await _variableValueRepo.GetValueByNameAndVaribleId(item.VariableId, item.Value);
 
-                if (variable == null)
-                    throw new AppException("Variable not found");
+                if (value == null)
+                    throw new AppException("Variable or value not found");
 
-                var runvarRelationship = new RunVariableValue { AssociatedRun = run, AssociatedVariableValue = variable };
+                var runvarRelationship = new RunVariableValue { AssociatedRun = run, AssociatedVariableValue = value };
                 run.RunVariableValues.Add(runvarRelationship);
             }
         }
 
-        private void UpdateCurrentVerifiedRun(bool isRejection, Run run, int userId) //make this spaghetti better
+        private async Task UpdateRunVariable(List<VariableData> request, Run run)
+        {
+            foreach (var item in request)
+            {
+                var value = await _variableValueRepo.GetValueByNameAndVaribleId(item.VariableId, item.Value);
+
+                if (value == null)
+                    throw new AppException(string.Format("Value {0} not found. Id: {1}", item.Value, item.ValueId));
+
+                if (run.RunVariableValues.FirstOrDefault(x => x.AssociatedVariableValue.VariableId == item.VariableId) == null)
+                    throw new AppException(string.Format("Couldn't find association with variable name: {0}, id: {1}", item.VariableName, item.VariableId));
+
+                run.RunVariableValues
+                    .FirstOrDefault(x => x.AssociatedVariableValue.VariableId == item.VariableId).AssociatedVariableValue = value;
+            }
+        }
+
+        private async Task UpdateCurrentVerifiedRun(bool isRejection, Run run, int userId) //make this spaghetti better
         {
             if (isRejection)
             {
-                var lastVerifiedRun = _runRepo.GetLastVerifiedRun(userId, run.CategoryId.Value, run.SubcategoryId).Result;
+                var lastVerifiedRun = await _runRepo.GetLastVerifiedRun(userId, run.CategoryId.Value, run.SubcategoryId);
 
                 if (lastVerifiedRun != null)
                 {
                     lastVerifiedRun.IsObsolete = false;
-                    _runRepo.UpdateRun(lastVerifiedRun);
+                    await _runRepo.UpdateRun(lastVerifiedRun);
                 }
             }
             else
             {
-                var currentVerifiedRun = _runRepo.GetCurrentVerifiedRun(userId, run.CategoryId.Value, run.SubcategoryId).Result;
+                var currentVerifiedRun = await _runRepo.GetCurrentVerifiedRun(userId, run.CategoryId.Value, run.SubcategoryId);
                 if (currentVerifiedRun != null)
                 {
                     if (currentVerifiedRun.Time < run.Time)
@@ -512,7 +581,7 @@ namespace HatCommunityWebsite.Service
                     {
                         run.IsObsolete = false;
                         currentVerifiedRun.IsObsolete = true;
-                        _runRepo.UpdateRun(currentVerifiedRun);
+                        await _runRepo.UpdateRun(currentVerifiedRun);
                     }
                 }
                 else

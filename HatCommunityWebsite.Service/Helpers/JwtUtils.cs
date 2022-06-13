@@ -48,7 +48,7 @@ namespace HatCommunityWebsite.Service.Helpers
 
             var token = new JwtSecurityToken(
                 claims: claims,
-                expires: DateTime.Now.AddDays(1),
+                expires: DateTime.Now.AddMinutes(30),
                 signingCredentials: creds);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
@@ -59,7 +59,7 @@ namespace HatCommunityWebsite.Service.Helpers
             var refreshToken = new RefreshToken
             {
                 Token = Convert.ToHexString(RandomNumberGenerator.GetBytes(64)),
-                Expires = DateTime.UtcNow.AddDays(7),
+                Expires = DateTime.UtcNow.AddDays(1),
                 Created = DateTime.UtcNow,
                 CreatedByIp = ipAddress
             };

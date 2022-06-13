@@ -61,7 +61,7 @@ namespace HatCommunityWebsite.Repo
         public async Task<User> GetUserByResetPasswordToken(string token)
         {
             return await _context.Users
-                .FirstOrDefaultAsync(x => x.ResetPasswordToken == token && x.ResetPasswordTokenExpires > DateTime.UtcNow);
+                .FirstOrDefaultAsync(x => x.ResetPasswordToken == token && x.ResetPasswordTokenExpires != null);
         }
 
         public async Task<User> GetUserByVerificationToken(string token)

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HatCommunityWebsite.DB
 {
@@ -33,6 +34,7 @@ namespace HatCommunityWebsite.DB
         public string? ResetPasswordToken { get; set; }
 
         public DateTime? ResetPasswordTokenExpires { get; set; }
+        public bool ResetTokenExpired => ResetPasswordTokenExpires.HasValue && ResetPasswordTokenExpires.Value > DateTime.UtcNow;
 
         //user verification
         public string? VerificationToken { get; set; }
@@ -43,7 +45,7 @@ namespace HatCommunityWebsite.DB
         public bool IsImported { get; set; }
 
         //jwt token refresh
-
+        public bool RememberLogIn { get; set; }
         public string? RefreshToken { get; set; }
         public DateTime? RefreshTokenCreated { get; set; }
 

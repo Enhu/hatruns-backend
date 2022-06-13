@@ -14,6 +14,10 @@ namespace HatCommunityWebsite.Repo
         Task SaveValue(VariableValue value);
         Task UpdateValue(VariableValue value);
         Task<VariableValue> GetValueByNameAndVaribleId(int id, string value);
+
+        Task<bool> ValueExistsByNameAndVariableId(string name, int variableId);
+
+        Task<bool> ValueExistsByNameAndVariableIdExcludeId(string name, int variableId, int id);
     }
     public class VariableValueRepository : IVariableValueRepository
     {
@@ -28,6 +32,17 @@ namespace HatCommunityWebsite.Repo
         {
             return await _context.VariableValues.FindAsync(id);
         }
+
+        public async Task<bool> ValueExistsByNameAndVariableId(string name, int variableId)
+        {
+            return await _context.VariableValues.AnyAsync(x => x.Name == name && x.VariableId == variableId);
+        }
+
+        public async Task<bool> ValueExistsByNameAndVariableIdExcludeId(string name, int variableId, int id)
+        {
+            return await _context.VariableValues.AnyAsync(x => x.Name == name && x.VariableId == variableId  && x.Id != id);
+        }
+
 
         public async Task<VariableValue> GetValueByNameAndVaribleId(int id, string value)
         {

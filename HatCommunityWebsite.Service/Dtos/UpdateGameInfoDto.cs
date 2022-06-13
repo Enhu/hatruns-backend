@@ -1,8 +1,12 @@
-﻿namespace HatCommunityWebsite.Service.Dtos
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace HatCommunityWebsite.Service.Dtos
 {
     public class UpdateGameInfoDto
     {
-        public int Id { get; set; }
+        [Required]
+        public int? Id { get; set; }
+        public string? Name { get; set; }
         public string? Acronym { get; set; }
         public string? ReleasedDate { get; set; }
         public bool? IsActive { get; set; }

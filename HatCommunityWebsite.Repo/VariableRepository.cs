@@ -1,24 +1,31 @@
 ﻿using HatCommunityWebsite.DB;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HatCommunityWebsite.Repo
 {
     public interface IVariableRepository
     {
         Task<Variable> GetVariableByNameAndId(int id, string name);
+
         Task<Variable> GetVariableByIdIncludeValues(int id);
+
         Task<Variable> GetVariableById(int id);
+
         Task UpdateVariable(Variable variable);
+
         Task SaveVariable(Variable variable);
+
+        Task UpdateVariables(List<Variable> variables);
+
+        Task SaveVariables(List<Variable> variables);
+
+        Task<bool> VariableExistsByName(string name);
     }
+
     public class VariableRepository : IVariableRepository
     {
         private readonly AppDbContext _context;
+
         public VariableRepository(AppDbContext context)
         {
             _context = context;
@@ -36,6 +43,11 @@ namespace HatCommunityWebsite.Repo
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
+        public async Task<bool> VariableExistsByName(string name)
+        {
+            return await _context.Variables.AnyAsync(x => x.Name == name);
+        }
+
         public async Task<Variable> GetVariableByNameAndId(int id, string name)
         {
             return await _context.Variables
@@ -47,9 +59,26 @@ namespace HatCommunityWebsite.Repo
             _context.Variables.Add(variable);
             await _context.SaveChangesAsync();
         }
+
         public async Task UpdateVariable(Variable variable)
         {
             _context.Variables.Add(variable);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task SaveVariables(List<Variable> variables)
+        {
+            foreach (var variable in variables)
+                _context.Variables.Add(variable);
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateVariables(List<Variable> variables)
+        {
+            foreach (var variable in variables)
+                _context.Variables.Update(variable);
+
             await _context.SaveChangesAsync();
         }
     }

@@ -18,10 +18,11 @@ builder.Services.AddDbContext<AppDbContext>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("HatCommunityWebsitePolicy",
-    builder =>
+    policy =>
     {
-        builder.WithOrigins("*")
+        policy.WithOrigins("https://localhost:3001", "http://localhost:3000")
             .AllowAnyHeader()
+            .AllowCredentials()
             .AllowAnyMethod();
     });
 });
@@ -56,6 +57,7 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<ISubmissionService, SubmissionService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ILeaderboardService, LeaderboardService>();
 
 //repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();

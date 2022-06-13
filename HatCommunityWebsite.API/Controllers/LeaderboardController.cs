@@ -1,6 +1,7 @@
 ﻿using HatCommunityWebsite.Service;
 using HatCommunityWebsite.Service.Dtos;
 using HatCommunityWebsite.Service.Responses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HatCommunityWebsite.API.Controllers
@@ -16,10 +17,19 @@ namespace HatCommunityWebsite.API.Controllers
             _leaderboardService = leaderboardService;
         }
 
-        [HttpGet]
-        public ActionResult<LeaderboardResponse> GetLeaderboard(LeaderboardDto request)
+        [AllowAnonymous]
+        [HttpGet("getruns/{categoryId}")]
+        public async Task<ActionResult<LeaderboardRunsResponse>> GetLeaderboard(int categoryId, [FromQuery] int? subcategoryId, [FromQuery] int? levelId)
         {
-            var response = _leaderboardService.GetLeaderboard(request);
+            var response = await _leaderboardService.GetLeaderboardRuns(categoryId, subcategoryId, levelId);
+            return Ok(response);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("getdata/{gameId}")]
+        public async Task<ActionResult<GameDataResponse>> GetGameData(string gameId, [FromQuery] int? levelId)
+        {
+            var response = await _leaderboardService.GetLeaderboardData(gameId, levelId);
             return Ok(response);
         }
     }

@@ -11,17 +11,17 @@ namespace HatCommunityWebsite.Service
 {
     public interface IUserService
     {
-        UserProfileRunsResponse GetUserProfileRuns(string username);
+        Task<List<UserProfileRunsResponse>> GetUserProfileRuns(string username);
 
-        UserDataResponse GetUserData(string username);
+        Task<UserDataResponse> GetUserData(string username);
 
-        void UpdateUserLocation(NewLocationDto request, ClaimsIdentity userIdentity);
+        Task UpdateUserLocation(NewLocationDto request, ClaimsIdentity userIdentity);
 
-        void UpdateUserPronouns(NewPronounsDto request, ClaimsIdentity userIdentity);
+        Task UpdateUserPronouns(NewPronounsDto request, ClaimsIdentity userIdentity);
 
-        void UpdateUserSocials(NewSocialsDto request, ClaimsIdentity userIdentity);
+        Task UpdateUserSocials(NewSocialsDto request, ClaimsIdentity userIdentity);
 
-        void UpdateUserAvatar(NewAvatarDto request, ClaimsIdentity userIdentity);
+        Task UpdateUserAvatar(NewAvatarDto request, ClaimsIdentity userIdentity);
     }
 
     public class UserService : IUserService
@@ -39,29 +39,28 @@ namespace HatCommunityWebsite.Service
             _mapper = mapper;
         }
 
-        public UserProfileRunsResponse GetUserProfileRuns(string username)
+        public async Task<List<UserProfileRunsResponse>> GetUserProfileRuns(string username)
         {
-            var runs = _runRepo.GetVerifiedUserProfileRuns(username).Result;
-            var gameList = _gameRepo.GetAllGames().Result;
+            var runs = await _runRepo.GetVerifiedUserProfileRuns(username);
+            var gameList = await _gameRepo.GetAllGames();
 
-            var response = new UserProfileRunsResponse();
+            var response = new List<UserProfileRunsResponse>();
 
-            var fullGameRuns = runs.Where(x => x.Category.Level == null).ToList();
-            var levelRuns = runs.Where(x => x.Category.Level != null).ToList();
+            var fullGameRuns = runs.Where(x => x.Category.LevelId == null).ToList();
+            var levelRuns = runs.Where(x => x.Category.LevelId != null).ToList();
 
             SetGames(gameList, response);
-            SetFullGameRuns(fullGameRuns, response);
-            SetLevelRuns(levelRuns, response);
+            await SetFullGameRuns(fullGameRuns, response);
+            await SetLevelRuns(levelRuns, response);
 
-            response.FullGameRuns.RemoveAll(x => x.Runs.Count == 0);
-            response.LevelRuns.RemoveAll(x => x.Runs.Count == 0);
+            response.RemoveAll(x => x.FullGameRuns.Count == 0 && x.LevelRuns.Count == 0);
 
             return response;
         }
 
-        public UserDataResponse GetUserData(string username)
+        public async Task<UserDataResponse> GetUserData(string username)
         {
-            var user = _userRepo.GetUserByUsername(username).Result;
+            var user = await _userRepo.GetUserByUsername(username);
 
             var response = _mapper.Map<UserDataResponse>(user);
             response.Avatar = SetUserAvatar(user.Avatar, user.ImageType);
@@ -69,10 +68,10 @@ namespace HatCommunityWebsite.Service
             return response;
         }
 
-        public void UpdateUserLocation(NewLocationDto request, ClaimsIdentity userIdentity)
+        public async Task UpdateUserLocation(NewLocationDto request, ClaimsIdentity userIdentity)
         {
             var userId = int.Parse(userIdentity.FindFirst("UserId").Value);
-            var user = _userRepo.GetUserById(userId).Result;
+            var user = await _userRepo.GetUserById(userId);
 
             if (user == null)
                 throw new AppException("User not found");
@@ -80,13 +79,13 @@ namespace HatCommunityWebsite.Service
             user.Country = request.Country;
             user.CountryCode = request.CountryCode;
 
-            _userRepo.UpdateUser(user);
+            await _userRepo.UpdateUser(user);
         }
 
-        public void UpdateUserPronouns(NewPronounsDto request, ClaimsIdentity userIdentity)
+        public async Task UpdateUserPronouns(NewPronounsDto request, ClaimsIdentity userIdentity)
         {
             var userId = int.Parse(userIdentity.FindFirst("UserId").Value);
-            var user = _userRepo.GetUserById(userId).Result;
+            var user = await _userRepo.GetUserById(userId);
 
             if (user == null)
                 throw new AppException("User not found");
@@ -95,13 +94,13 @@ namespace HatCommunityWebsite.Service
             user.ShePronouns = request.ShePronouns;
             user.TheyPronouns = request.TheyPronouns;
 
-            _userRepo.UpdateUser(user);
+            await _userRepo.UpdateUser(user);
         }
 
-        public void UpdateUserSocials(NewSocialsDto request, ClaimsIdentity userIdentity)
+        public async Task UpdateUserSocials(NewSocialsDto request, ClaimsIdentity userIdentity)
         {
             var userId = int.Parse(userIdentity.FindFirst("UserId").Value);
-            var user = _userRepo.GetUserById(userId).Result;
+            var user = await _userRepo.GetUserById(userId);
 
             if (user == null)
                 throw new AppException("User not found");
@@ -110,13 +109,13 @@ namespace HatCommunityWebsite.Service
             user.DiscordHandle = request.DiscordHandle;
             user.YoutubeHandle = request.YoutubeHandle;
 
-            _userRepo.UpdateUser(user);
+            await _userRepo.UpdateUser(user);
         }
 
-        public void UpdateUserAvatar(NewAvatarDto request, ClaimsIdentity userIdentity)
+        public async Task UpdateUserAvatar(NewAvatarDto request, ClaimsIdentity userIdentity)
         {
             var userId = int.Parse(userIdentity.FindFirst("UserId").Value);
-            var user = _userRepo.GetUserById(userId).Result;
+            var user = await _userRepo.GetUserById(userId);
 
             if (user == null)
                 throw new AppException("User not found");
@@ -137,13 +136,13 @@ namespace HatCommunityWebsite.Service
             user.Avatar = imgBytes;
             user.ImageType = imgType;
 
-            _userRepo.UpdateUser(user);
+            await _userRepo.UpdateUser(user);
         }
 
         //helper methods
-        private string GetRunPlace(int runId, int categoryId, int? subcategoryId)
+        private async Task<string> GetRunPlace(int runId, int categoryId, int? subcategoryId)
         {
-            var runs = _runRepo.GetLeaderboardRuns(categoryId, subcategoryId).Result;
+            var runs = await _runRepo.GetLeaderboardRuns(categoryId, subcategoryId);
 
             return (runs.FindIndex(x => x.Id == runId) + 1).ToString();
         }
@@ -161,16 +160,17 @@ namespace HatCommunityWebsite.Service
             return avatar;
         }
 
-        private void SetLevelRuns(List<Run> levelRuns, UserProfileRunsResponse response)
+        private async Task SetLevelRuns(List<Run> levelRuns, List<UserProfileRunsResponse> response)
         {
+
             foreach (var run in levelRuns)
             {
-                var game = response.LevelRuns.Where(x => x.Game.Name == run.Category.Game.Name).FirstOrDefault();
+                var game = response.Where(x => x.Game.Name == run.Category.Game.Name).FirstOrDefault();
 
                 var runData = new RunData
                 {
                     Id = run.Id,
-                    Place = GetRunPlace(run.Id, run.CategoryId.Value, run.SubcategoryId),
+                    Place = await GetRunPlace(run.Id, run.CategoryId.Value, run.SubcategoryId),
                     CategoryName = run.Category.Name,
                     SubcategoryName = run.SubCategory?.Name,
                     Date = run.Date,
@@ -179,20 +179,20 @@ namespace HatCommunityWebsite.Service
                     LevelName = run.Category.Level.Name
                 };
 
-                game.Runs.Add(runData);
+                game.LevelRuns.Add(runData);
             }
         }
 
-        private void SetFullGameRuns(List<Run> fullGameRuns, UserProfileRunsResponse response)
+        private async Task SetFullGameRuns(List<Run> fullGameRuns, List<UserProfileRunsResponse> response)
         {
             foreach (var run in fullGameRuns)
             {
-                var game = response.FullGameRuns.Where(x => x.Game.Name == run.Category.Game.Name).FirstOrDefault();
+                var game = response.Where(x => x.Game.Name == run.Category.Game.Name).FirstOrDefault();
 
                 var runData = new RunData
                 {
                     Id = run.Id,
-                    Place = GetRunPlace(run.Id, run.CategoryId.Value, run.SubcategoryId),
+                    Place = await GetRunPlace(run.Id, run.CategoryId.Value, run.SubcategoryId),
                     CategoryName = run.Category.Name,
                     SubcategoryName = run.SubCategory?.Name,
                     Date = run.Date,
@@ -200,16 +200,28 @@ namespace HatCommunityWebsite.Service
                     Time = run.Time
                 };
 
-                game.Runs.Add(runData);
+                game.FullGameRuns.Add(runData);
             }
         }
 
-        private static void SetGames(List<Game> gameList, UserProfileRunsResponse response)
+        private static void SetGames(List<Game> gameList, List<UserProfileRunsResponse> response)
         {
             foreach (var game in gameList)
             {
-                response.FullGameRuns.Add(new FullGameRunsData { Game = new GameData { Name = game.Name }, Runs = new List<RunData>() });
-                response.LevelRuns.Add(new LevelRunsData { Game = new GameData { Name = game.Name }, Runs = new List<RunData>() });
+                var gameData = new GameData
+                {
+                    Name = game.Name,
+                    Acronym = game.Acronym
+                };
+
+                var gameRuns = new UserProfileRunsResponse
+                {
+                    Game = gameData,
+                    FullGameRuns = new List<RunData>(),
+                    LevelRuns = new List<RunData>()
+                };
+
+                response.Add(gameRuns);
             }
         }
     }

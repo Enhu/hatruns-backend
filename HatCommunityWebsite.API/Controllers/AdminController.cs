@@ -19,42 +19,42 @@ namespace HatCommunityWebsite.API.Controllers
 
         [Authorize(Policy = "Admin")]
         [HttpGet("dashboard/{gameId}")]
-        public ActionResult<GameDashboardResponse> GetDashboardData(int gameId)
+        public async Task<ActionResult<GameDashboardResponse>> GetDashboardData(int gameId)
         {
-            var response = _adminService.GetDashboardData(gameId);
+            var response = await _adminService.GetDashboardData(gameId);
             return Ok(response);
         }
 
         [Authorize(Policy = "Admin")]
-        [HttpPut("game/update")]
-        public IActionResult UpdateGameInfo(UpdateGameInfoDto request)
+        [HttpPost("game/update")]
+        public async Task<IActionResult> UpdateGameInfo([FromBody] UpdateGameInfoDto request)
         {
-            _adminService.UpdateGameInfo(request);
+            await _adminService.UpdateGameInfo(request);
             return Ok(new { message = "Game updated" });
         }
 
         [Authorize(Policy = "Admin")]
-        [HttpPut("game/levels/update")]
-        public IActionResult HandleGameLevels(List<GameLevelDto> request)
+        [HttpPost("game/levels/update")]
+        public async Task<IActionResult> HandleGameLevels([FromBody] List<GameLevelDto> request)
         {
-            _adminService.HandleGameLevels(request);
-            return Ok(new { message = "Levels updated" });
+            var response = await _adminService.HandleGameLevels(request);
+            return Ok(new { message = response });
         }
 
         [Authorize(Policy = "Admin")]
-        [HttpPut("game/categories/update")]
-        public IActionResult HandleGameCategories(List<CategoryDto> request)
+        [HttpPost("game/categories/update")]
+        public async Task<IActionResult> HandleGameCategories([FromBody] List<CategoryDto> request)
         {
-            _adminService.HandleGameCategories(request);
-            return Ok(new { message = "Categories updated" });
+            var response = await _adminService.HandleGameCategories(request);
+            return Ok(new { message = response });
         }
 
         [Authorize(Policy = "Admin")]
-        [HttpPut("game/variables/update")]
-        public IActionResult HandleGameVariables(List<VariableDto> request)
+        [HttpPost("game/variables/update")]
+        public async Task<IActionResult> HandleGameVariables([FromBody] List<VariableDto> request)
         {
-            _adminService.HandleGameVariables(request);
-            return Ok(new { message = "Variables updated" });
+            var response = await _adminService.HandleGameVariables(request);
+            return Ok(new { message = response });
         }
     }
 }

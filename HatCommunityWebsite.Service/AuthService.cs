@@ -11,17 +11,21 @@ namespace HatCommunityWebsite.Service
 {
     public interface IAuthService
     {
-        AuthenticateResponse Authenticate(LogInDto request, string ipAddress);
+        Task<AuthenticateResponse> Authenticate(LogInDto request, string ipAddress);
 
-        void Register(UserDto request, string origin);
+        Task Register(UserDto request, string origin);
 
-        void VerifyEmail(string token);
+        Task VerifyEmail(string token);
 
-        AuthenticateResponse RefreshToken(string token, string ipAddress);
+        Task<AuthenticateResponse> RefreshToken(string token, string ipAddress);
 
-        void ForgotPassword(ForgotPasswordDto request, string origin);
+        Task ForgotPassword(ForgotPasswordDto request, string origin);
 
-        void ResetPassword(ResetPasswordDto request);
+        Task ResetPassword(ResetPasswordDto request);
+
+        Task ValidateResetPassword(ValidateResetPasswordDto request);
+
+        Task Logout(string token);
     }
 
     public class AuthService : IAuthService
@@ -39,13 +43,16 @@ namespace HatCommunityWebsite.Service
             _jwtUtils = jwtUtils;
         }
 
-        public AuthenticateResponse Authenticate(LogInDto request, string ipAddress)
+        public async Task<AuthenticateResponse> Authenticate(LogInDto request, string ipAddress)
         {
-            var user = _userRepo.GetUserByUsername(request.Username).Result;
+            var user = await _userRepo.GetUserByUsername(request.Username);
 
             // validate
             if (user == null || !user.IsVerified || !VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
                 throw new AppException("Email or password is incorrect");
+
+            //remember me option
+            user.RememberLogIn = request.Remember;
 
             // authentication successful so generate jwt and refresh token
             var jwtToken = _jwtUtils.GenerateJwtToken(user);
@@ -57,26 +64,38 @@ namespace HatCommunityWebsite.Service
             user.RefreshTokenCreated = refreshToken.Created;
 
             // update changes to db
-            _userRepo.UpdateUser(user);
+            await _userRepo.UpdateUser(user);
 
             var response = new AuthenticateResponse
             {
                 JwtToken = jwtToken,
+                Username = user.Username,
+                IsAdmin = user.Role == (int)UserRoles.ROLE_ADMIN ? true : false,
                 RefreshToken = refreshToken
             };
 
             return response;
         }
 
-        public AuthenticateResponse RefreshToken(string token, string ipAddress)
+        public async Task<AuthenticateResponse> RefreshToken(string token, string ipAddress)
         {
-            var user = _userRepo.GetUserByRefreshToken(token).Result;
+            if (token == null)
+                throw new AppException("Token cannot be null");
+
+            var user = await _userRepo.GetUserByRefreshToken(token);
 
             if (user == null)
                 throw new AppException("Invalid token");
 
-            if (user.RefreshTokenExpires < DateTime.Now) //is this necessary?
+            if (!user.RememberLogIn && user.RefreshTokenExpires < DateTime.Now)
+            {
+                user.RefreshToken = null;
+                user.RefreshTokenCreated = null;
+
+                await _userRepo.UpdateUser(user);
+
                 throw new AppException("Token expired");
+            }
 
             // replace old refresh token with a new one
             var newRefreshToken = _jwtUtils.GenerateRefreshToken(ipAddress);
@@ -85,7 +104,7 @@ namespace HatCommunityWebsite.Service
             user.RefreshTokenCreated = newRefreshToken.Created;
 
             // save changes to db
-            _userRepo.UpdateUser(user);
+            await _userRepo.UpdateUser(user);
 
             // generate new jwt
             var jwtToken = _jwtUtils.GenerateJwtToken(user);
@@ -94,28 +113,48 @@ namespace HatCommunityWebsite.Service
             var response = new AuthenticateResponse
             {
                 JwtToken = jwtToken,
+                Username = user.Username,
+                IsAdmin = user.Role == (int)UserRoles.ROLE_ADMIN ? true : false,
                 RefreshToken = newRefreshToken
             };
 
             return response;
         }
 
-        public void Register(UserDto request, string origin)
+        public async Task Logout(string token)
+        {
+            if (token == null)
+                throw new AppException("Token cannot be null");
+
+            var user = await _userRepo.GetUserByRefreshToken(token);
+
+            if (user == null)
+                throw new AppException("Invalid token");
+
+            user.RefreshToken = null;
+            user.RefreshTokenCreated = null;
+
+            await _userRepo.UpdateUser(user);
+        }
+
+        public async Task Register(UserDto request, string origin)
         {
             // validate email
-            if (_userRepo.UserExistsByEmail(request.Email).Result)
+            var emailExists = await _userRepo.UserExistsByEmail(request.Email);
+            if (emailExists)
                 throw new AppException("Email already exists.");
 
             // validate username
-            if (_userRepo.UserExistsByEmail(request.Username).Result)
+            var userExists = await _userRepo.UserExistsByEmail(request.Username);
+            if (userExists)
                 throw new AppException("Username already exists.");
 
             var user = new User();
             user.Username = request.Username;
-            user.Email = request.Email;  
+            user.Email = request.Email;
             user.Role = (int)UserRoles.ROLE_BASIC;
             user.Created = DateTime.UtcNow;
-            user.VerificationToken = GenerateVerificationToken();
+            user.VerificationToken = await GenerateVerificationToken();
             user.IsImported = false;
 
             // hash password
@@ -125,15 +164,15 @@ namespace HatCommunityWebsite.Service
             user.PasswordSalt = passwordSalt;
 
             // save user
-            _userRepo.SaveUser(user);
+            await _userRepo.SaveUser(user);
 
             // send verification email
             SendVerificationEmail(user, origin);
         }
 
-        public void VerifyEmail(string token)
+        public async Task VerifyEmail(string token)
         {
-            var user = _userRepo.GetUserByVerificationToken(token).Result;
+            var user = await _userRepo.GetUserByVerificationToken(token);
 
             if (user == null)
                 throw new AppException("Verification failed");
@@ -141,29 +180,41 @@ namespace HatCommunityWebsite.Service
             user.VerifiedDate = DateTime.UtcNow;
             user.VerificationToken = null;
 
-            _userRepo.UpdateUser(user);
+            await _userRepo.UpdateUser(user);
         }
 
-        public void ForgotPassword(ForgotPasswordDto request, string origin)
+        public async Task ForgotPassword(ForgotPasswordDto request, string origin)
         {
-            var user = _userRepo.GetUserByEmail(request.Email).Result;
+            var user = await _userRepo.GetUserByEmail(request.Email);
 
             // always return ok response to prevent email enumeration
             if (user == null) return;
 
             // create reset token that expires after 1 day
-            user.ResetPasswordToken = GenerateResetPasswordToken();
+            user.ResetPasswordToken = await GenerateResetPasswordToken();
             user.ResetPasswordTokenExpires = DateTime.UtcNow.AddDays(1);
 
-            _userRepo.UpdateUser(user);
+            await _userRepo.UpdateUser(user);
 
             SendPasswordResetEmail(user, origin);
         }
 
-        public void ResetPassword(ResetPasswordDto request)
+        public async Task ValidateResetPassword(ValidateResetPasswordDto request)
         {
-            var user = _userRepo.GetUserByResetPasswordToken(request.Token).Result;
+            var user = await _userRepo.GetUserByResetPasswordToken(request.Token);
+            if (user == null) throw new AppException("Invalid reset password token.");
+
+            if (!user.ResetTokenExpired)
+                throw new AppException("Reset token expired. Send a new recovery email.");
+        }
+
+        public async Task ResetPassword(ResetPasswordDto request)
+        {
+            var user = await _userRepo.GetUserByResetPasswordToken(request.Token);
             if (user == null) throw new AppException("Invalid reset password token");
+
+            if (!user.ResetTokenExpired)
+                throw new AppException("Reset token expired. Send a new recovery email.");
 
             // update password and remove reset token
             CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
@@ -173,7 +224,7 @@ namespace HatCommunityWebsite.Service
             user.ResetPasswordToken = null;
             user.ResetPasswordTokenExpires = null;
 
-            _userRepo.UpdateUser(user);
+            await _userRepo.UpdateUser(user);
         }
 
         //helper methods
@@ -196,28 +247,28 @@ namespace HatCommunityWebsite.Service
             }
         }
 
-        private string GenerateVerificationToken()
+        private async Task<string> GenerateVerificationToken()
         {
             // token is a cryptographically strong random sequence of values
             var token = Convert.ToHexString(RandomNumberGenerator.GetBytes(64));
 
             // ensure token is unique by checking against db
-            var tokenIsUnique = !_userRepo.UserVerificationTokenIsUnique(token).Result;
+            var tokenIsUnique = !await _userRepo.UserVerificationTokenIsUnique(token);
             if (!tokenIsUnique)
-                return GenerateVerificationToken();
+                return await GenerateVerificationToken();
 
             return token;
         }
 
-        private string GenerateResetPasswordToken()
+        private async Task<string> GenerateResetPasswordToken()
         {
             // token is a cryptographically strong random sequence of values
             var token = Convert.ToHexString(RandomNumberGenerator.GetBytes(64));
 
             // ensure token is unique by checking against db
-            var tokenIsUnique = !_userRepo.UserResetPasswordTokenIsUnique(token).Result;
+            var tokenIsUnique = !await _userRepo.UserResetPasswordTokenIsUnique(token);
             if (!tokenIsUnique)
-                return GenerateResetPasswordToken();
+                return await GenerateResetPasswordToken();
 
             return token;
         }
@@ -229,7 +280,7 @@ namespace HatCommunityWebsite.Service
             {
                 // origin exists if request sent from browser
                 // sending link to verify through browser
-                var verifyUrl = $"{origin}/user/verify-email?token={user.VerificationToken}";
+                var verifyUrl = $"{origin}/verify-account?token={user.VerificationToken}";
                 message = $@"<p>Click the below link to verify your account:</p>
                             <p><a href=""{verifyUrl}"">{verifyUrl}</a></p>";
             }
@@ -237,15 +288,15 @@ namespace HatCommunityWebsite.Service
             {
                 // origin missing if request sent directly to api with some restful app
                 // sending instructions to verify account through the api
-                message = $@"<p>Please use the below token to verify your email address with the <code>/user/verify-email</code> api route:</p>
+                message = $@"<p>Please use the below token to verify your email address with the <code>/verify-account</code> api route:</p>
                             <p><code>{user.VerificationToken}</code></p>";
             }
 
             _emailService.Send(
                 to: user.Email,
                 subject: "Hatruns.com - Account Verification",
-                html: $@"<h4>Verify Email</h4>
-                        <p>Thanks for registering!</p>
+                html: $@"<h4>Verify account</h4>
+                        <p>Hello {user.Username}, thanks for registering!</p>
                         {message}"
             );
         }
@@ -255,20 +306,21 @@ namespace HatCommunityWebsite.Service
             string message;
             if (!string.IsNullOrEmpty(origin))
             {
-                var resetUrl = $"{origin}/user/reset-password?token={user.ResetPasswordToken}";
+                var resetUrl = $"{origin}/reset-password?token={user.ResetPasswordToken}";
                 message = $@"<p>Please click the below link to reset your password. The link will expire after 1 day:</p>
                             <p><a href=""{resetUrl}"">{resetUrl}</a></p>";
             }
             else
             {
-                message = $@"<p>Please use the below token to reset your password with the <code>/user/reset-password</code> api route. The token will expire after 1 day:</p>
+                message = $@"<p>Please use the below token to reset your password with the <code>/reset-password</code> api route. The token will expire after 1 day:</p>
                             <p><code>{user.ResetPasswordToken}</code></p>";
             }
 
             _emailService.Send(
                 to: user.Email,
                 subject: "Hatruns.com - Reset Password",
-                html: $@"<h4>Reset Password</h4>
+                html: $@"<h4>Reset password</h4>
+                        <p>Hello {user.Username}, thanks for registering!</p>
                         {message}"
             );
         }

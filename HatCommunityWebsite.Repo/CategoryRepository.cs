@@ -1,21 +1,25 @@
 ﻿using HatCommunityWebsite.DB;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HatCommunityWebsite.Repo
 {
     public interface ICategoryRepository
     {
         Task<Category> GetCategoryById(int id);
+
         Task<Category> GetCategoryByIdIncludeSubcategories(int id);
+
         Task SaveCategory(Category category);
+
+        Task SaveCategories(List<Category> categories);
+
         Task UpdateCategory(Category category);
+
+        Task UpdateCategories(List<Category> categories);
+
         Task<List<Category>> GetAllLevelCategories();
     }
+
     public class CategoryRepository : ICategoryRepository
     {
         private readonly AppDbContext _context;
@@ -24,6 +28,7 @@ namespace HatCommunityWebsite.Repo
         {
             _context = context;
         }
+
         public async Task<Category> GetCategoryById(int id)
         {
             return await _context.Categories.FindAsync(id);
@@ -39,8 +44,9 @@ namespace HatCommunityWebsite.Repo
         public async Task<List<Category>> GetAllLevelCategories()
         {
             return await _context.Categories
-                .Where(x => x.IsLevel && !x.IsCustom)
-                .DistinctBy(x => x.Name)
+                .Where(x => x.LevelId != null && !x.IsCustom)
+                .GroupBy(x => x.Name)
+                .Select(x => x.FirstOrDefault())
                 .ToListAsync();
         }
 
@@ -53,6 +59,22 @@ namespace HatCommunityWebsite.Repo
         public async Task UpdateCategory(Category category)
         {
             _context.Categories.Update(category);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task SaveCategories(List<Category> categories)
+        {
+            foreach (var category in categories)
+                _context.Categories.Add(category);
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateCategories(List<Category> categories)
+        {
+            foreach (var category in categories)
+                _context.Categories.Update(category);
+
             await _context.SaveChangesAsync();
         }
     }

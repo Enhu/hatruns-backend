@@ -11,9 +11,11 @@ namespace HatCommunityWebsite.Service.Helpers
         public AutoMapperProfile()
         {
             CreateMap<SubmissionDto, Run>();
+            CreateMap<Run, SubmissionDto>();
             CreateMap<SubmissionResponse, Run>();
             CreateMap<UpdateSubmissionDto, Run>();
             CreateMap<UserDataResponse, User>();
+            CreateMap<User, UserDataResponse>();
             CreateMap<RunData, Run>();
         }
     }

@@ -9,7 +9,7 @@
         public DateTime Date { get; set; }
         public string? Variables { get; set; }
         public int? SubcategoryId { get; set; }
-        public string VideoLinks { get; set; }
+        public List<string> Videos { get; set; }
         public bool AutoVerify { get; set; }
     }
 }

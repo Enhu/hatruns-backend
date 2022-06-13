@@ -1,17 +1,23 @@
-﻿namespace HatCommunityWebsite.Service.Dtos
+﻿using HatCommunityWebsite.Service.Responses.Data;
+using System.ComponentModel.DataAnnotations;
+
+namespace HatCommunityWebsite.Service.Dtos
 {
     public class SubmissionDto
     {
-        public List<int>? UserIds { get; set; } 
+        public int? RunId { get; set; } = null;
+        public List<int>? ExtraUserIds { get; set; } = null;
         public string Platform { get; set; }
         public string? Description { get; set; }
-        public double Time { get; set; }
-        public List<string> Videos { get; set; }
+        [Required]
+        public double? Time { get; set; }
+        [Required]
+        public List<string>? Videos { get; set; }
         public DateTime Date { get; set; }
-        public string? Variables { get; set; }
-        public int GameId { get; set; }
-        public int CategoryId { get; set; }
-        public int? SubcategoryId { get; set; }
+        [Required]
+        public int? CategoryId { get; set; }
+        public int? SubcategoryId { get; set; } = null;
         public bool AutoVerify { get; set; }
+        public List<VariableData>? Variables { get; set; }
     }
 }

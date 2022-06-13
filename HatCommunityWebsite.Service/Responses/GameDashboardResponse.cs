@@ -31,7 +31,8 @@
         public int Id { get; set; }
         public string Name { get; set; }
         public string Rules { get; set; }
-        public bool IsDefault { get; set; }
+        public int Index { get; set; }
+        public int? LevelId { get; set; }
         public ICollection<AdminSubcategoryData> Subcategories { get; set; }
     }
 
@@ -40,7 +41,7 @@
         public int Id { get; set; }
         public string Name { get; set; }
         public string Rules { get; set; }
-        public bool IsDefault { get; set; }
+        public int Index { get; set; }
     }
 
     public class AdminValueData
