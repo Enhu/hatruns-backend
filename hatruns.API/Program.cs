@@ -17,7 +17,7 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>();
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("HatCommunityWebsitePolicy",
+    options.AddPolicy("hatrunspolicy",
     policy =>
     {
         policy.WithOrigins("https://localhost:3001", "http://localhost:3000")
@@ -99,7 +99,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseCors("HatCommunityWebsitePolicy");
+app.UseCors("hatrunspolicy");
 
 app.UseMiddleware<ErrorHandlerMiddleware>();
 
