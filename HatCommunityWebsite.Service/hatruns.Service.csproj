@@ -13,8 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FullRuns.DB\HatCommunityWebsite.DB.csproj" />
-    <ProjectReference Include="..\HatCommunityWebsite.Repo\HatCommunityWebsite.Repo.csproj" />
+    <ProjectReference Include="..\FullRuns.DB\hatruns.Database.csproj" />
+    <ProjectReference Include="..\HatCommunityWebsite.Repo\hatruns.Repository.csproj" />
   </ItemGroup>
 
 </Project>

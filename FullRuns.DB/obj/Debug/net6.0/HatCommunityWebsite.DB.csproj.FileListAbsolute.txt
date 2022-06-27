@@ -26,3 +26,17 @@ D:\Enhu\Documents\GitHub\Hatruns.com-backend\FullRuns.DB\obj\Debug\net6.0\refint
 D:\Enhu\Documents\GitHub\Hatruns.com-backend\FullRuns.DB\obj\Debug\net6.0\HatCommunityWebsite.DB.pdb
 D:\Enhu\Documents\GitHub\Hatruns.com-backend\FullRuns.DB\obj\Debug\net6.0\HatCommunityWebsite.DB.genruntimeconfig.cache
 D:\Enhu\Documents\GitHub\Hatruns.com-backend\FullRuns.DB\obj\Debug\net6.0\ref\HatCommunityWebsite.DB.dll
+D:\Enhu\Documents\GitHub\hatruns-backend\FullRuns.DB\bin\Debug\net6.0\HatCommunityWebsite.DB.deps.json
+D:\Enhu\Documents\GitHub\hatruns-backend\FullRuns.DB\bin\Debug\net6.0\HatCommunityWebsite.DB.runtimeconfig.json
+D:\Enhu\Documents\GitHub\hatruns-backend\FullRuns.DB\bin\Debug\net6.0\HatCommunityWebsite.DB.dll
+D:\Enhu\Documents\GitHub\hatruns-backend\FullRuns.DB\bin\Debug\net6.0\HatCommunityWebsite.DB.pdb
+D:\Enhu\Documents\GitHub\hatruns-backend\FullRuns.DB\obj\Debug\net6.0\HatCommunityWebsite.DB.csproj.AssemblyReference.cache
+D:\Enhu\Documents\GitHub\hatruns-backend\FullRuns.DB\obj\Debug\net6.0\HatCommunityWebsite.DB.GeneratedMSBuildEditorConfig.editorconfig
+D:\Enhu\Documents\GitHub\hatruns-backend\FullRuns.DB\obj\Debug\net6.0\HatCommunityWebsite.DB.AssemblyInfoInputs.cache
+D:\Enhu\Documents\GitHub\hatruns-backend\FullRuns.DB\obj\Debug\net6.0\HatCommunityWebsite.DB.AssemblyInfo.cs
+D:\Enhu\Documents\GitHub\hatruns-backend\FullRuns.DB\obj\Debug\net6.0\HatCommunityWebsite.DB.csproj.CoreCompileInputs.cache
+D:\Enhu\Documents\GitHub\hatruns-backend\FullRuns.DB\obj\Debug\net6.0\HatCommunityWebsite.DB.dll
+D:\Enhu\Documents\GitHub\hatruns-backend\FullRuns.DB\obj\Debug\net6.0\refint\HatCommunityWebsite.DB.dll
+D:\Enhu\Documents\GitHub\hatruns-backend\FullRuns.DB\obj\Debug\net6.0\HatCommunityWebsite.DB.pdb
+D:\Enhu\Documents\GitHub\hatruns-backend\FullRuns.DB\obj\Debug\net6.0\HatCommunityWebsite.DB.genruntimeconfig.cache
+D:\Enhu\Documents\GitHub\hatruns-backend\FullRuns.DB\obj\Debug\net6.0\ref\HatCommunityWebsite.DB.dll

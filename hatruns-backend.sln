@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32414.318
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HatCommunityWebsite.API", "HatCommunityWebsite.API\HatCommunityWebsite.API.csproj", "{C3AA70EB-AF85-4659-B1E5-5C82A1EC2350}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "hatruns.API", "HatCommunityWebsite.API\hatruns.API.csproj", "{C3AA70EB-AF85-4659-B1E5-5C82A1EC2350}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HatCommunityWebsite.DB", "FullRuns.DB\HatCommunityWebsite.DB.csproj", "{9755B0DE-F915-4E00-8312-F0379B265A07}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "hatruns.Database", "FullRuns.DB\hatruns.Database.csproj", "{9755B0DE-F915-4E00-8312-F0379B265A07}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HatCommunityWebsite.Repo", "HatCommunityWebsite.Repo\HatCommunityWebsite.Repo.csproj", "{3FEB730A-9257-4AD9-895D-45E5403F29A5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "hatruns.Repository", "HatCommunityWebsite.Repo\hatruns.Repository.csproj", "{3FEB730A-9257-4AD9-895D-45E5403F29A5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HatCommunityWebsite.Service", "HatCommunityWebsite.Service\HatCommunityWebsite.Service.csproj", "{C89577E9-75F8-427A-A591-975811A08ACE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "hatruns.Service", "HatCommunityWebsite.Service\hatruns.Service.csproj", "{C89577E9-75F8-427A-A591-975811A08ACE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

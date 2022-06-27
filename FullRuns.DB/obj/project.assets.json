@@ -2010,11 +2010,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\FullRuns.DB\\HatCommunityWebsite.DB.csproj",
-      "projectName": "HatCommunityWebsite.DB",
-      "projectPath": "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\FullRuns.DB\\HatCommunityWebsite.DB.csproj",
+      "projectUniqueName": "D:\\Enhu\\Documents\\GitHub\\hatruns-backend\\FullRuns.DB\\hatruns.Database.csproj",
+      "projectName": "hatruns.Database",
+      "projectPath": "D:\\Enhu\\Documents\\GitHub\\hatruns-backend\\FullRuns.DB\\hatruns.Database.csproj",
       "packagesPath": "C:\\Users\\Enhu\\.nuget\\packages\\",
-      "outputPath": "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\FullRuns.DB\\obj\\",
+      "outputPath": "D:\\Enhu\\Documents\\GitHub\\hatruns-backend\\FullRuns.DB\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Enhu\\AppData\\Roaming\\NuGet\\NuGet.Config",

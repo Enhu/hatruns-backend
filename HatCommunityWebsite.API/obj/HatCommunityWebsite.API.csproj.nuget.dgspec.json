@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\HatCommunityWebsite.API\\HatCommunityWebsite.API.csproj": {}
+    "D:\\Enhu\\Documents\\GitHub\\hatruns-backend\\HatCommunityWebsite.API\\HatCommunityWebsite.API.csproj": {}
   },
   "projects": {
-    "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\FullRuns.DB\\HatCommunityWebsite.DB.csproj": {
+    "D:\\Enhu\\Documents\\GitHub\\hatruns-backend\\FullRuns.DB\\HatCommunityWebsite.DB.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\FullRuns.DB\\HatCommunityWebsite.DB.csproj",
+        "projectUniqueName": "D:\\Enhu\\Documents\\GitHub\\hatruns-backend\\FullRuns.DB\\HatCommunityWebsite.DB.csproj",
         "projectName": "HatCommunityWebsite.DB",
-        "projectPath": "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\FullRuns.DB\\HatCommunityWebsite.DB.csproj",
+        "projectPath": "D:\\Enhu\\Documents\\GitHub\\hatruns-backend\\FullRuns.DB\\HatCommunityWebsite.DB.csproj",
         "packagesPath": "C:\\Users\\Enhu\\.nuget\\packages\\",
-        "outputPath": "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\FullRuns.DB\\obj\\",
+        "outputPath": "D:\\Enhu\\Documents\\GitHub\\hatruns-backend\\FullRuns.DB\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Enhu\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -86,14 +86,14 @@
         }
       }
     },
-    "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\HatCommunityWebsite.API\\HatCommunityWebsite.API.csproj": {
+    "D:\\Enhu\\Documents\\GitHub\\hatruns-backend\\HatCommunityWebsite.API\\HatCommunityWebsite.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\HatCommunityWebsite.API\\HatCommunityWebsite.API.csproj",
+        "projectUniqueName": "D:\\Enhu\\Documents\\GitHub\\hatruns-backend\\HatCommunityWebsite.API\\HatCommunityWebsite.API.csproj",
         "projectName": "HatCommunityWebsite.API",
-        "projectPath": "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\HatCommunityWebsite.API\\HatCommunityWebsite.API.csproj",
+        "projectPath": "D:\\Enhu\\Documents\\GitHub\\hatruns-backend\\HatCommunityWebsite.API\\HatCommunityWebsite.API.csproj",
         "packagesPath": "C:\\Users\\Enhu\\.nuget\\packages\\",
-        "outputPath": "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\HatCommunityWebsite.API\\obj\\",
+        "outputPath": "D:\\Enhu\\Documents\\GitHub\\hatruns-backend\\HatCommunityWebsite.API\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Enhu\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -110,11 +110,11 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\FullRuns.DB\\HatCommunityWebsite.DB.csproj": {
-                "projectPath": "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\FullRuns.DB\\HatCommunityWebsite.DB.csproj"
+              "D:\\Enhu\\Documents\\GitHub\\hatruns-backend\\FullRuns.DB\\HatCommunityWebsite.DB.csproj": {
+                "projectPath": "D:\\Enhu\\Documents\\GitHub\\hatruns-backend\\FullRuns.DB\\HatCommunityWebsite.DB.csproj"
               },
-              "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\HatCommunityWebsite.Service\\HatCommunityWebsite.Service.csproj": {
-                "projectPath": "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\HatCommunityWebsite.Service\\HatCommunityWebsite.Service.csproj"
+              "D:\\Enhu\\Documents\\GitHub\\hatruns-backend\\HatCommunityWebsite.Service\\HatCommunityWebsite.Service.csproj": {
+                "projectPath": "D:\\Enhu\\Documents\\GitHub\\hatruns-backend\\HatCommunityWebsite.Service\\HatCommunityWebsite.Service.csproj"
               }
             }
           }
@@ -190,14 +190,14 @@
         }
       }
     },
-    "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\HatCommunityWebsite.Repo\\HatCommunityWebsite.Repo.csproj": {
+    "D:\\Enhu\\Documents\\GitHub\\hatruns-backend\\HatCommunityWebsite.Repo\\HatCommunityWebsite.Repo.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\HatCommunityWebsite.Repo\\HatCommunityWebsite.Repo.csproj",
+        "projectUniqueName": "D:\\Enhu\\Documents\\GitHub\\hatruns-backend\\HatCommunityWebsite.Repo\\HatCommunityWebsite.Repo.csproj",
         "projectName": "HatCommunityWebsite.Repo",
-        "projectPath": "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\HatCommunityWebsite.Repo\\HatCommunityWebsite.Repo.csproj",
+        "projectPath": "D:\\Enhu\\Documents\\GitHub\\hatruns-backend\\HatCommunityWebsite.Repo\\HatCommunityWebsite.Repo.csproj",
         "packagesPath": "C:\\Users\\Enhu\\.nuget\\packages\\",
-        "outputPath": "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\HatCommunityWebsite.Repo\\obj\\",
+        "outputPath": "D:\\Enhu\\Documents\\GitHub\\hatruns-backend\\HatCommunityWebsite.Repo\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Enhu\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -214,8 +214,8 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\FullRuns.DB\\HatCommunityWebsite.DB.csproj": {
-                "projectPath": "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\FullRuns.DB\\HatCommunityWebsite.DB.csproj"
+              "D:\\Enhu\\Documents\\GitHub\\hatruns-backend\\FullRuns.DB\\HatCommunityWebsite.DB.csproj": {
+                "projectPath": "D:\\Enhu\\Documents\\GitHub\\hatruns-backend\\FullRuns.DB\\HatCommunityWebsite.DB.csproj"
               }
             }
           }
@@ -248,14 +248,14 @@
         }
       }
     },
-    "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\HatCommunityWebsite.Service\\HatCommunityWebsite.Service.csproj": {
+    "D:\\Enhu\\Documents\\GitHub\\hatruns-backend\\HatCommunityWebsite.Service\\HatCommunityWebsite.Service.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\HatCommunityWebsite.Service\\HatCommunityWebsite.Service.csproj",
+        "projectUniqueName": "D:\\Enhu\\Documents\\GitHub\\hatruns-backend\\HatCommunityWebsite.Service\\HatCommunityWebsite.Service.csproj",
         "projectName": "HatCommunityWebsite.Service",
-        "projectPath": "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\HatCommunityWebsite.Service\\HatCommunityWebsite.Service.csproj",
+        "projectPath": "D:\\Enhu\\Documents\\GitHub\\hatruns-backend\\HatCommunityWebsite.Service\\HatCommunityWebsite.Service.csproj",
         "packagesPath": "C:\\Users\\Enhu\\.nuget\\packages\\",
-        "outputPath": "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\HatCommunityWebsite.Service\\obj\\",
+        "outputPath": "D:\\Enhu\\Documents\\GitHub\\hatruns-backend\\HatCommunityWebsite.Service\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Enhu\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -272,11 +272,11 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\FullRuns.DB\\HatCommunityWebsite.DB.csproj": {
-                "projectPath": "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\FullRuns.DB\\HatCommunityWebsite.DB.csproj"
+              "D:\\Enhu\\Documents\\GitHub\\hatruns-backend\\FullRuns.DB\\HatCommunityWebsite.DB.csproj": {
+                "projectPath": "D:\\Enhu\\Documents\\GitHub\\hatruns-backend\\FullRuns.DB\\HatCommunityWebsite.DB.csproj"
               },
-              "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\HatCommunityWebsite.Repo\\HatCommunityWebsite.Repo.csproj": {
-                "projectPath": "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\HatCommunityWebsite.Repo\\HatCommunityWebsite.Repo.csproj"
+              "D:\\Enhu\\Documents\\GitHub\\hatruns-backend\\HatCommunityWebsite.Repo\\HatCommunityWebsite.Repo.csproj": {
+                "projectPath": "D:\\Enhu\\Documents\\GitHub\\hatruns-backend\\HatCommunityWebsite.Repo\\HatCommunityWebsite.Repo.csproj"
               }
             }
           }

@@ -908,7 +908,7 @@
           }
         }
       },
-      "HatCommunityWebsite.DB/1.0.0": {
+      "hatruns.Database/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v6.0",
         "dependencies": {
@@ -919,40 +919,40 @@
           "System.IdentityModel.Tokens.Jwt": "6.17.0"
         },
         "compile": {
-          "bin/placeholder/HatCommunityWebsite.DB.dll": {}
+          "bin/placeholder/hatruns.Database.dll": {}
         },
         "runtime": {
-          "bin/placeholder/HatCommunityWebsite.DB.dll": {}
+          "bin/placeholder/hatruns.Database.dll": {}
         }
       },
-      "HatCommunityWebsite.Repo/1.0.0": {
+      "hatruns.Repository/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v6.0",
         "dependencies": {
-          "HatCommunityWebsite.DB": "1.0.0"
+          "hatruns.Database": "1.0.0"
         },
         "compile": {
-          "bin/placeholder/HatCommunityWebsite.Repo.dll": {}
+          "bin/placeholder/hatruns.Repository.dll": {}
         },
         "runtime": {
-          "bin/placeholder/HatCommunityWebsite.Repo.dll": {}
+          "bin/placeholder/hatruns.Repository.dll": {}
         }
       },
-      "HatCommunityWebsite.Service/1.0.0": {
+      "hatruns.Service/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v6.0",
         "dependencies": {
           "AutoMapper": "11.0.1",
           "AutoMapper.Extensions.Microsoft.DependencyInjection": "11.0.0",
-          "HatCommunityWebsite.DB": "1.0.0",
-          "HatCommunityWebsite.Repo": "1.0.0",
-          "MailKit": "3.2.0"
+          "MailKit": "3.2.0",
+          "hatruns.Database": "1.0.0",
+          "hatruns.Repository": "1.0.0"
         },
         "compile": {
-          "bin/placeholder/HatCommunityWebsite.Service.dll": {}
+          "bin/placeholder/hatruns.Service.dll": {}
         },
         "runtime": {
-          "bin/placeholder/HatCommunityWebsite.Service.dll": {}
+          "bin/placeholder/hatruns.Service.dll": {}
         }
       }
     }
@@ -2653,35 +2653,35 @@
         "version.txt"
       ]
     },
-    "HatCommunityWebsite.DB/1.0.0": {
+    "hatruns.Database/1.0.0": {
       "type": "project",
-      "path": "../FullRuns.DB/HatCommunityWebsite.DB.csproj",
-      "msbuildProject": "../FullRuns.DB/HatCommunityWebsite.DB.csproj"
+      "path": "../FullRuns.DB/hatruns.Database.csproj",
+      "msbuildProject": "../FullRuns.DB/hatruns.Database.csproj"
     },
-    "HatCommunityWebsite.Repo/1.0.0": {
+    "hatruns.Repository/1.0.0": {
       "type": "project",
-      "path": "../HatCommunityWebsite.Repo/HatCommunityWebsite.Repo.csproj",
-      "msbuildProject": "../HatCommunityWebsite.Repo/HatCommunityWebsite.Repo.csproj"
+      "path": "../HatCommunityWebsite.Repo/hatruns.Repository.csproj",
+      "msbuildProject": "../HatCommunityWebsite.Repo/hatruns.Repository.csproj"
     },
-    "HatCommunityWebsite.Service/1.0.0": {
+    "hatruns.Service/1.0.0": {
       "type": "project",
-      "path": "../HatCommunityWebsite.Service/HatCommunityWebsite.Service.csproj",
-      "msbuildProject": "../HatCommunityWebsite.Service/HatCommunityWebsite.Service.csproj"
+      "path": "../HatCommunityWebsite.Service/hatruns.Service.csproj",
+      "msbuildProject": "../HatCommunityWebsite.Service/hatruns.Service.csproj"
     }
   },
   "projectFileDependencyGroups": {
     "net6.0": [
       "AutoMapper >= 11.0.1",
       "AutoMapper.Extensions.Microsoft.DependencyInjection >= 11.0.0",
-      "HatCommunityWebsite.DB >= 1.0.0",
-      "HatCommunityWebsite.Service >= 1.0.0",
       "Microsoft.AspNetCore.Authentication.JwtBearer >= 6.0.4",
       "Microsoft.AspNetCore.Mvc.NewtonsoftJson >= 6.0.4",
       "Microsoft.EntityFrameworkCore.Design >= 6.0.4",
       "Microsoft.IdentityModel.Tokens >= 6.17.0",
       "Swashbuckle.AspNetCore >= 6.2.3",
       "Swashbuckle.AspNetCore.Filters >= 7.0.2",
-      "System.IdentityModel.Tokens.Jwt >= 6.17.0"
+      "System.IdentityModel.Tokens.Jwt >= 6.17.0",
+      "hatruns.Database >= 1.0.0",
+      "hatruns.Service >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -2690,11 +2690,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\HatCommunityWebsite.API\\HatCommunityWebsite.API.csproj",
-      "projectName": "HatCommunityWebsite.API",
-      "projectPath": "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\HatCommunityWebsite.API\\HatCommunityWebsite.API.csproj",
+      "projectUniqueName": "D:\\Enhu\\Documents\\GitHub\\hatruns-backend\\HatCommunityWebsite.API\\hatruns.API.csproj",
+      "projectName": "hatruns.API",
+      "projectPath": "D:\\Enhu\\Documents\\GitHub\\hatruns-backend\\HatCommunityWebsite.API\\hatruns.API.csproj",
       "packagesPath": "C:\\Users\\Enhu\\.nuget\\packages\\",
-      "outputPath": "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\HatCommunityWebsite.API\\obj\\",
+      "outputPath": "D:\\Enhu\\Documents\\GitHub\\hatruns-backend\\HatCommunityWebsite.API\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Enhu\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -2711,11 +2711,11 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "projectReferences": {
-            "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\FullRuns.DB\\HatCommunityWebsite.DB.csproj": {
-              "projectPath": "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\FullRuns.DB\\HatCommunityWebsite.DB.csproj"
+            "D:\\Enhu\\Documents\\GitHub\\hatruns-backend\\FullRuns.DB\\hatruns.Database.csproj": {
+              "projectPath": "D:\\Enhu\\Documents\\GitHub\\hatruns-backend\\FullRuns.DB\\hatruns.Database.csproj"
             },
-            "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\HatCommunityWebsite.Service\\HatCommunityWebsite.Service.csproj": {
-              "projectPath": "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\HatCommunityWebsite.Service\\HatCommunityWebsite.Service.csproj"
+            "D:\\Enhu\\Documents\\GitHub\\hatruns-backend\\HatCommunityWebsite.Service\\hatruns.Service.csproj": {
+              "projectPath": "D:\\Enhu\\Documents\\GitHub\\hatruns-backend\\HatCommunityWebsite.Service\\hatruns.Service.csproj"
             }
           }
         }

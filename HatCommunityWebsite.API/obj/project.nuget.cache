@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "hUVTFviGgJ5PzRQPMOiPrYTwhQTQlhv/rnSFGDG3w1NHwY5UNbjvNQhh0fZfHQhLjkf9xjbLBFHVgzRKqi0xng==",
+  "dgSpecHash": "LtKkKtu/JNQS7SohgsMk0EpBZ/E5u1N1N8kRd5A7yWtmOvBSMmSxrFewaIT83Y7YYuXAm/QyL/JzXPLghgHalQ==",
   "success": true,
-  "projectFilePath": "D:\\Enhu\\Documents\\GitHub\\Hatruns.com-backend\\HatCommunityWebsite.API\\HatCommunityWebsite.API.csproj",
+  "projectFilePath": "D:\\Enhu\\Documents\\GitHub\\hatruns-backend\\HatCommunityWebsite.API\\hatruns.API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Enhu\\.nuget\\packages\\automapper\\11.0.1\\automapper.11.0.1.nupkg.sha512",
     "C:\\Users\\Enhu\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\11.0.0\\automapper.extensions.microsoft.dependencyinjection.11.0.0.nupkg.sha512",
