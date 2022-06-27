@@ -21,7 +21,7 @@ namespace HatCommunityWebsite.DB
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(
-                @"Server=(localdb)\mssqllocaldb;Database=HatCommunityWebsite;Trusted_Connection=True");
+                @"Server=(localdb)\mssqllocaldb;Database=hatruns;Trusted_Connection=True");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
