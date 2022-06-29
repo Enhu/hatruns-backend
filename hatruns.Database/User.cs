@@ -29,6 +29,9 @@ namespace HatCommunityWebsite.DB
         public bool ShePronouns { get; set; }
         public bool TheyPronouns { get; set; }
         public DateTime Created { get; set; }
+        
+        //banned flag
+        public bool Banned { get; set; }
 
         //reset password token
         public string? ResetPasswordToken { get; set; }

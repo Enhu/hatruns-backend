@@ -50,6 +50,10 @@ namespace HatCommunityWebsite.Service
             // validate
             if (user == null || !user.IsVerified || !VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
                 throw new AppException("Email or password is incorrect");
+            
+            //ban check
+            if (user.Banned)
+                throw new AppException("Your account is banned.");
 
             //remember me option
             user.RememberLogIn = request.Remember;
