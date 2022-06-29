@@ -17,6 +17,8 @@ namespace HatCommunityWebsite.Service
         Task<string> HandleGameCategories(List<CategoryDto> request);
 
         Task<string> HandleGameVariables(List<VariableDto> request);
+        
+        Task BanUser(BanUserDto request);
     }
 
     public class AdminService : IAdminService
@@ -27,9 +29,11 @@ namespace HatCommunityWebsite.Service
         private readonly IVariableRepository _variableRepo;
         private readonly IVariableValueRepository _variableValueRepo;
         private readonly ISubcategoryRepository _subcategoryRepo;
+        private readonly IUserRepository _userRepo;
 
         public AdminService(IGameRepository gameRepo, ILevelRepository levelRepo, ICategoryRepository categoryRepo,
-            ISubcategoryRepository subcategoryRepo, IVariableRepository variableRepo, IVariableValueRepository variableValueRepo)
+            ISubcategoryRepository subcategoryRepo, IVariableRepository variableRepo, IVariableValueRepository variableValueRepo,
+            IUserRepository userRepository)
         {
             _gameRepo = gameRepo;
             _levelRepo = levelRepo;
@@ -37,6 +41,7 @@ namespace HatCommunityWebsite.Service
             _subcategoryRepo = subcategoryRepo;
             _variableRepo = variableRepo;
             _variableValueRepo = variableValueRepo;
+            _userRepo = userRepository;
         }
 
         public async Task<GameDashboardResponse> GetDashboardData(int gameId)
@@ -497,6 +502,16 @@ namespace HatCommunityWebsite.Service
             request.Acronym = game.Acronym;
             request.ReleaseDate = game.ReleaseDate;
             request.IsActive = game.IsActive;
+        }
+
+        public async Task BanUser(BanUserDto request)
+        {
+            var user = await _userRepo.GetUserById(request.UserId.Value);
+            if (user == null)
+                throw new AppException("User not found");
+            if (user.Role == 1)
+                throw new AppException("User is an Admin");
+            user.Banned = true;
         }
     }
 }

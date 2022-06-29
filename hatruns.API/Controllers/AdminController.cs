@@ -56,5 +56,13 @@ namespace HatCommunityWebsite.API.Controllers
             var response = await _adminService.HandleGameVariables(request);
             return Ok(new { message = response });
         }
+        
+        [Authorize(Policy = "Admin")]
+        [HttpPost("user/ban")]
+        public async Task<IActionResult> BanUser(BanUserDto request)
+        {
+            await _adminService.BanUser(request);
+            return Ok(new { message = "User was banned." });
+        }
     }
 }
